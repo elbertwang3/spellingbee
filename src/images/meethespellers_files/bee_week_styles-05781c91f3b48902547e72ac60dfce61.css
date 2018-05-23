@@ -1,0 +1,55 @@
+.speller-stats h1 {
+  display: inline-block;
+}
+
+.tableau-link {
+  color: #fff;
+}
+
+.tableau-link:hover {
+  color: #fff;
+}
+
+
+#block-meetthespellersintro {
+  margin-bottom: 0;
+}
+
+.page-name-about-the-bee #block-aboutthebee90thvideo p {
+  font-size: 1.2em;
+}
+
+.page-name-about-the-bee #block-aboutthebeeinspirediscoverblock {
+  padding-top: 0;
+}
+
+#block-aboutthebeepromotingliteracyyellow, #block-aboutthebeeinspirediscoverblock {
+  margin: 0;
+}
+
+.page-name-about-the-bee #block-aboutthebeeinspirediscoverblock .col-sm-2,
+.page-name-about-the-bee #block-aboutthebeeinspirediscoverblock .col-sm-5 {
+  padding-top: 50px;
+}
+
+.page-name-about-the-bee .journey-introduction-block .content {
+  left: auto;
+  padding: 2em;
+}
+
+.page-name-about-the-bee .video-embed-field-responsive-video.form-group {
+  margin-bottom: 0;
+}
+
+@media only screen and (min-width: 1200px) {
+  .page-name-about-the-bee .two-col-striped-image-block .striped .content {
+    padding: 20px;
+  }
+}
+
+@media only screen and (min-width: 992px) {
+  .page-name-about-the-bee .winning-words {
+      height: 700px;
+      margin: 0;
+  }
+}

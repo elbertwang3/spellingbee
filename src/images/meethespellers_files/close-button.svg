@@ -1,0 +1,37 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 34.84 34.67">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+      }
+
+      .cls-2 {
+        opacity: 0.5;
+      }
+
+      .cls-3 {
+        mask: url(#mask);
+      }
+    </style>
+    <mask id="mask" x="0" y="0" width="34.84" height="34.67" maskUnits="userSpaceOnUse">
+      <g transform="translate(0 -0.57)">
+        <g id="mask-2">
+          <polygon id="path-1" class="cls-1" points="0 35.24 34.84 35.24 34.84 0.57 0 0.57 0 35.24"/>
+        </g>
+      </g>
+    </mask>
+  </defs>
+  <title>close-button</title>
+  <g id="Desktop-Layouts" class="cls-2">
+    <g id="Navigation-with-Search-Left">
+      <g id="Close-Button">
+        <g id="Group-3">
+          <g class="cls-3">
+            <path id="Fill-1" class="cls-1" d="M17.42,2.14A15.77,15.77,0,1,1,6.21,29.06,15.77,15.77,0,0,1,17.42,2.14m12.32,3.5a17.51,17.51,0,0,0-24.65,0,17.34,17.34,0,0,0,12.32,29.6A17.33,17.33,0,0,0,29.74,5.64" transform="translate(0 -0.57)"/>
+          </g>
+        </g>
+        <path id="Fill-4" class="cls-1" d="M15.9,18.31L10,24.22a0.78,0.78,0,0,0,0,1.11,0.81,0.81,0,0,0,1.12,0L17,19.42l6.34,6.31a0.79,0.79,0,1,0,1.12-1.11h0l-6.34-6.31,6.74-6.71a0.78,0.78,0,0,0,0-1.11,0.81,0.81,0,0,0-1.12,0L17,17.2l-6.34-6.31a0.79,0.79,0,0,0-.56-0.23h0A0.78,0.78,0,0,0,9.56,12Z" transform="translate(0 -0.57)"/>
+      </g>
+    </g>
+  </g>
+</svg>

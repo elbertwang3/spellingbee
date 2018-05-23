@@ -1,0 +1,21 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 34">
+  <defs>
+    <style>
+      .cls-1 {
+        opacity: 0.5;
+      }
+
+      .cls-2 {
+        fill: #fff;
+      }
+    </style>
+  </defs>
+  <title>search-icon</title>
+  <g id="Desktop-Layouts" class="cls-1">
+    <g id="Navigation">
+      <g id="Page-1">
+        <path class="cls-2" d="M24,13.1A10.87,10.87,0,1,1,13.1,2.23,10.88,10.88,0,0,1,24,13.1h0Zm6.62,18.52-7.34-7.34,1.18-1.18,7.34,7.34a1.65,1.65,0,0,1-1.18,1.18h0ZM24.4,19.94L24,20.35a13.08,13.08,0,1,0-3.43,3.5l-0.46.48L29.72,34h0.46A3.9,3.9,0,0,0,34,30V29.56Z"/>
+      </g>
+    </g>
+  </g>
+</svg>
