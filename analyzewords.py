@@ -1,8 +1,12 @@
 import csv
 import difflib
 import unidecode
+from collections import defaultdict
+import unicodedata
 
-
+def strip_accents(s):
+   return ''.join(c for c in unicodedata.normalize('NFD', unicode(s, 'utf-8'))
+                  if unicodedata.category(c) != 'Mn')
 def iterative_levenshtein(s, t):
 	""" 
 		iterative_levenshtein(s, t) -> ldist
@@ -59,19 +63,23 @@ def iterative_levenshtein(s, t):
 			
 			rowscount -= 1
 			if currdistance == mindist + 1:
+				#operationsdict["delete " + s[rowscount]] += 1
 				print "delete " + s[rowscount]
+				operationsdict["delete " + s[rowscount]] += 1
 		elif argmin == 2:
 			
 			colscount -= 1
 			if currdistance == mindist + 1:
 				print "insert " + t[colscount]
+				operationsdict["insert " + t[colscount]] += 1
 			
 		elif argmin == 0:
 			
 			colscount -= 1
 			rowscount -= 1
 			if currdistance == mindist + 1:
-				print "sub " + s[rowscount] + " for " + t[colscount]
+				print "substitute " + s[rowscount] + " for " + t[colscount]
+				operationsdict["substitute " + s[rowscount] + " for " + t[colscount]] += 1
 			
 
 	for r in range(rows):
@@ -83,20 +91,21 @@ def iterative_levenshtein(s, t):
  
 	return dist[row][col]
 
+
+operationsdict = defaultdict(int)
 file = open("public/data/results.csv", "r")
 reader = csv.reader(file)
 next(reader)
 for thing in reader:
 	#print row
-	correct_spelling = thing[6]
-	given_spelling = thing[7]
+	correct_spelling = strip_accents(thing[6].lower())
+	given_spelling = strip_accents(thing[7].lower())
 	correct = thing[8]
-	#print correct_spelling
-	#print given_spelling
 	if correct and given_spelling:
 		print given_spelling
 		print correct_spelling
-		iterative_levenshtein(given_spelling.lower(),correct_spelling.lower())
+		
+		iterative_levenshtein(given_spelling,correct_spelling)
 		#break
 		#print correct_spelling
 		#print given_spelling
@@ -110,6 +119,12 @@ for thing in reader:
 				print(u'Add "{}" to position {}'.format(s[-1],i))''' 
 
 #print iterative
-
+sorteddict = sorted(operationsdict.iteritems(),key=lambda (k,v): v,reverse=True)
+'''file2 = open('public/data/levenshtein.csv', 'w+')
+writer = csv.writer(file2)
+writer.writerow(['operation', 'frequency'])'''
+for thing in sorteddict:
+	print thing
+	#writer.writerow(list(thing))
 
 #print(iterative_levenshtein("flaw", "lawn"))
