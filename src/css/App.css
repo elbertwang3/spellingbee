@@ -196,6 +196,11 @@ a:visited {
   stroke: #E49F4F;
 }
 
+.ring {
+  fill: none;
+  stroke: #855B2C;
+}
+
 @media only screen and (max-width: 1000px) { 
   .sections {
     float: none;

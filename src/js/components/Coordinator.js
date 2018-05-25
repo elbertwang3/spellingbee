@@ -42,6 +42,9 @@ export default class Coordinator extends Component {
     let chartWidth = 0
     let chartHeight = 0
     let beesize = 0
+    let ringsize = 0
+    const scaleDown = 1
+
     const radius = 3
     let simulation = d3.forceSimulation()
     let cut 
@@ -52,6 +55,7 @@ export default class Coordinator extends Component {
     const beeScaleY = d3.scaleLinear()
     const radialScale = d3.scaleSqrt()
     const radiusScale = d3.scalePow().exponent(2)
+    const offsetScale = d3.scaleLinear()
 
     
     
@@ -63,11 +67,14 @@ export default class Coordinator extends Component {
       } else {
         width = window.innerWidth
       }*/
-      console.log(window.innerHeight)
+      //console.log(window.innerHeight)
       const width = window.innerWidth > 1000 ? ReactDOM.findDOMNode(that).clientWidth : window.innerWidth
       const height = window.innerHeight
       chart.width(width).height(height)
-      beesize =Math.min(chartWidth, chartHeight)
+      beesize = Math.min(chartWidth, chartHeight)
+      ringsize = beesize * 0.8
+
+      console.log("beesize: " + beesize)
       
       el.call(chart)
     }
@@ -83,6 +90,7 @@ export default class Coordinator extends Component {
         const svgEnter = svg.enter().append('svg').attr("class", "servesvg")
         const gEnter = svgEnter.append('g')
         gEnter.append("g").attr("class", "nodes")
+        gEnter.append("g").attr("class", "rings")
 
         const axis = gEnter.append('g').attr('class', 'g-axis')
         axis.append('g').attr('class', 'axis-x')
@@ -103,12 +111,16 @@ export default class Coordinator extends Component {
           .range(chartHeight < chartWidth ? [0, beesize] : [offset, chartHeight-offset])
 
         radialScale
-          .domain([lengthDict[lengthDict.length-1].value, lengthDict[0].value])
-          .range([1, beesize/2])
+          .domain([0, 4])
+          .range([ringsize/2, 10])
 
         radiusScale
           .domain([0,4])
-          .range([2,5])
+          .range([ringsize/100,ringsize/200])
+
+        offsetScale
+          .domain([600,300])
+          .range([1.1,1.2])
 
       }
 
@@ -125,6 +137,7 @@ export default class Coordinator extends Component {
         g.attr('transform', translate(margin.left, margin.top))
 
         const nodes = g.select(".nodes")
+        const rings = g.select(".rings")
 
         /*simulation = d3.forceSimulation(data)
           .force('charge', d3.forceManyBody().strength(5))
@@ -149,31 +162,54 @@ export default class Coordinator extends Component {
             .enter()
             .append("circle")
             .attr("class", "node")
-            .attr("r", d => radiusScale(d['appearances']))
+         
           .merge(node)
 
             .transition()
             .duration(1000)
+            .attr("r", d => beesize/300)
             .attr("cx", d => beeScaleX(d['beex']))
             .attr("cy", d => beeScaleY(d['beey']))
         } else if (cut == "zero") {
-          counter = 0
+          
+          const ring = rings.selectAll(".ring")
+            .data(lengthDict.slice(0,1))
+          ring.exit().remove()
+          ring
+            .enter()
+            .append("circle")
+            .attr("class", "ring")
+          .merge(ring)
+            .attr("r", (d,i) => radialScale(i))
+            .attr("cx", chartWidth/2)
+            .attr("cy", chartHeight/2)
+
           simulation.nodes(data)
             .force("charge", d3.forceCollide().radius(d => radiusScale(d['appearances']) * 1.5))
-            .force("r", d3.forceRadial(d => {
-              return beesize/2
-            }).strength(0.05))
+            .force("r", d3.forceRadial(radialScale(0)).strength(0.05))
             .on("tick", ticked)
             .alpha(1)
             .restart()
 
         } else if (cut == "one") {
+          const ring = rings.selectAll(".ring")
+            .data(lengthDict.slice(0,2))
+          ring.exit().remove()
+          ring
+            .enter()
+            .append("circle")
+            .attr("class", "ring")
+          .merge(ring)
+            .attr("r", (d,i) => radialScale(i))
+            .attr("cx", chartWidth/2)
+            .attr("cy", chartHeight/2)
+
           simulation.nodes(data)
             .force("r", d3.forceRadial(d => {
               if (d['appearances'] >= 1) {
-                return radialScale(d3.sum(lengthDict.slice(1).map(d => d.value))) 
+                return radialScale(1)
               } else {
-                return radialScale(lengthDict[0].value) 
+                return radialScale(d['appearances'])
               }
             })
             .strength(0.05))
@@ -182,14 +218,24 @@ export default class Coordinator extends Component {
 
 
         } else if (cut == "two") {
+          const ring = rings.selectAll(".ring")
+            .data(lengthDict.slice(0,3))
+          ring.exit().remove()
+          ring
+            .enter()
+            .append("circle")
+            .attr("class", "ring")
+          .merge(ring)
+            .attr("r", (d,i) => radialScale(i))
+            .attr("cx", chartWidth/2)
+            .attr("cy", chartHeight/2)
+
           simulation.nodes(data)
             .force("r", d3.forceRadial(d => {
               if (d['appearances'] >= 2) {
-                return radialScale(d3.sum(lengthDict.slice(2).map(d => d.value))) 
-              } else if (d['appearances'] >= 1) {
-                return radialScale(lengthDict[1].value) 
+                return radialScale(2)
               } else {
-                return radialScale(lengthDict[0].value) 
+                return radialScale(d['appearances'])
               }
             })
             .strength(0.05))
@@ -198,16 +244,23 @@ export default class Coordinator extends Component {
 
             
         } else if (cut == "three") {
+          const ring = rings.selectAll(".ring")
+            .data(lengthDict.slice(0,4))
+          ring.exit().remove()
+          ring
+            .enter()
+            .append("circle")
+            .attr("class", "ring")
+          .merge(ring)
+            .attr("r", (d,i) => radialScale(i))
+            .attr("cx", chartWidth/2)
+            .attr("cy", chartHeight/2)
           simulation.nodes(data)
             .force("r", d3.forceRadial(d => {
               if (d['appearances'] >= 3) {
-                return radialScale(d3.sum(lengthDict.slice(3).map(d => d.value))) 
-              } else if (d['appearances'] == 2) {
-                return radialScale(lengthDict[2].value) 
-              } else if (d['appearances'] >= 1) {
-                return radialScale(lengthDict[1].value) 
+                return radialScale(3)
               } else {
-                return radialScale(lengthDict[0].value) 
+                return radialScale(d['appearances'])
               }
             })
             .strength(0.05))
@@ -215,30 +268,29 @@ export default class Coordinator extends Component {
             .restart()
 
         } else if (cut == "four") {
-          simulation.nodes(data)
-            .force("r", d3.forceRadial(d => {
-              if (d['appearances'] >= 4) {
-                return radialScale(d3.sum(lengthDict.slice(4).map(d => d.value))) 
-              } else if (d['appearances'] == 3) {
-                 return radialScale(lengthDict[3].value) 
-              } else if (d['appearances'] == 2) {
-                return radialScale(lengthDict[2].value) 
-              } else if (d['appearances'] >= 1) {
-                return radialScale(lengthDict[1].value) 
-              } else {
-                return radialScale(lengthDict[0].value) 
-              }
-            })
-            .strength(0.05))
-            .alpha(1)
-            .restart()
+
+          const ring = rings.selectAll(".ring")
+            .data(lengthDict)
+          ring.exit().remove()
+          ring
+            .enter()
+            .append("circle")
+            .attr("class", "ring")
+          .merge(ring)
+            .attr("r", (d,i) => radialScale(i))
+            .attr("cx", chartWidth/2)
+            .attr("cy", chartHeight/2)
+          
+    
+
+          
 
         }
 
 
 
         function ticked() {
-          //console.log("ticking")
+          console.log("ticking")
           //console.log(counter)
           counter += 1
           if (counter >= 300) {
@@ -246,9 +298,31 @@ export default class Coordinator extends Component {
           }
 
 
-          node
-          .attr("cx", function(d){ return d.x + chartWidth/2; })
-          .attr("cy", function(d){ return d.y + chartHeight/2; })
+          if (cut != "four") {
+            node
+              .attr("cx", function(d){ return d.x + chartWidth/2; })
+              .attr("cy", function(d){ return d.y + chartHeight/2; })
+              .attr("r", d => radiusScale(d['appearances']))
+          } else {
+
+            console.log(node
+             .filter(d => d['appearances'] != 4))
+            node
+             .filter(d => d['appearances'] != 4)
+              .attr("cx", function(d){ return d.x + chartWidth/2; })
+              .attr("cy", function(d){ return d.y + chartHeight/2; })
+              .attr("r", d => radiusScale(d['appearances']))
+
+            node
+              .filter(d => d['appearances'] == 4)
+              .transition()
+              .duration(1000)
+              .attr("cx", chartWidth/2)
+              .attr("cy", chartHeight/2)
+
+          }
+          
+
           
           
         }
