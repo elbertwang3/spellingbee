@@ -24,12 +24,36 @@ export default class Coordinator extends Component {
     const {profileimages, data} = this.props
     const margin = {top: 25, bottom: 25, right: 25, left: 25}
 
+    const lengthDict = d3.nest()
+      .key(function(d) { return d['appearances']; })
+      .rollup(function(v) { return v.length; })
+      .entries(data)
+  
+    console.log(data)
+    console.log(lengthDict)
+
+
+
     let chart = coordinatorchart()
     const el = d3.select('.coordinator')
+    
     let width = 0
     let height = 0
     let chartWidth = 0
     let chartHeight = 0
+    let beesize = 0
+    const radius = 3
+    let simulation = d3.forceSimulation()
+    let cut 
+    let calculated = false
+    let counter = 0
+
+    const beeScaleX = d3.scaleLinear()
+    const beeScaleY = d3.scaleLinear()
+    const radialScale = d3.scaleSqrt()
+    const radiusScale = d3.scalePow().exponent(2)
+
+    
     
     function resize() {
       //const sz = Math.min(el.node().offsetWidth, window.innerHeight) * 0.9
@@ -39,23 +63,203 @@ export default class Coordinator extends Component {
       } else {
         width = window.innerWidth
       }*/
-      console.log(ReactDOM.findDOMNode(that).clientHeight)
-      console.log(ReactDOM.findDOMNode(that).clientWidth)
-      const width = window.innerWidth > 1000 ? 1000 : window.innerWidth
+      console.log(window.innerHeight)
+      const width = window.innerWidth > 1000 ? ReactDOM.findDOMNode(that).clientWidth : window.innerWidth
       const height = window.innerHeight
       chart.width(width).height(height)
+      beesize =Math.min(chartWidth, chartHeight)
+      
       el.call(chart)
     }
 
+    function translate(x, y) {
+      return `translate(${x}, ${y})`
+    }
+
+
     function coordinatorchart() {
       function enter({ container, data }) {
+        const svg = container.selectAll('svg').data([data])
+        const svgEnter = svg.enter().append('svg').attr("class", "servesvg")
+        const gEnter = svgEnter.append('g')
+        gEnter.append("g").attr("class", "nodes")
+
+        const axis = gEnter.append('g').attr('class', 'g-axis')
+        axis.append('g').attr('class', 'axis-x')
+
+        axis.append('g').attr('class', 'axis-y')
+
       }
+
+      function updateScales({ data }) {    
+        const offset = Math.abs(chartHeight - chartWidth) / 2
+        beeScaleX
+          .domain(d3.extent(data, d => d['beex']))
+          .range(chartWidth < chartHeight ? [0, beesize] : [offset, chartWidth-offset])
+
+        
+        beeScaleY
+          .domain(d3.extent(data, d => d['beey']))
+          .range(chartHeight < chartWidth ? [0, beesize] : [offset, chartHeight-offset])
+
+        radialScale
+          .domain([lengthDict[lengthDict.length-1].value, lengthDict[0].value])
+          .range([1, beesize/2])
+
+        radiusScale
+          .domain([0,4])
+          .range([2,5])
+
+      }
+
       function updateDom({ container, data }) {
+        const svg = container.select('svg')
+
+        svg
+          .attr('width', width)
+          .attr('height', height)
+
+
+        const g = svg.select('g')
+
+        g.attr('transform', translate(margin.left, margin.top))
+
+        const nodes = g.select(".nodes")
+
+        /*simulation = d3.forceSimulation(data)
+          .force('charge', d3.forceManyBody().strength(5))
+          .force('center', d3.forceCenter(chartWidth / 2, chartHeight / 2))
+          .force('collision', d3.forceCollide().radius(function(d) {
+            return 3
+          }))
+          .on('tick', ticked)
+
+        console.log(data)
+
+        simulation.nodes(data)
+           .on('tick', ticked)*/
+        let node = nodes.selectAll(".node")
+          .data(data)
+
+        node.exit().remove()
+        console.log(cut)
+        if (cut == "bee") {
+          simulation.stop()
+          node
+            .enter()
+            .append("circle")
+            .attr("class", "node")
+            .attr("r", d => radiusScale(d['appearances']))
+          .merge(node)
+
+            .transition()
+            .duration(1000)
+            .attr("cx", d => beeScaleX(d['beex']))
+            .attr("cy", d => beeScaleY(d['beey']))
+        } else if (cut == "zero") {
+          counter = 0
+          simulation.nodes(data)
+            .force("charge", d3.forceCollide().radius(d => radiusScale(d['appearances']) * 1.5))
+            .force("r", d3.forceRadial(d => {
+              return beesize/2
+            }).strength(0.05))
+            .on("tick", ticked)
+            .alpha(1)
+            .restart()
+
+        } else if (cut == "one") {
+          simulation.nodes(data)
+            .force("r", d3.forceRadial(d => {
+              if (d['appearances'] >= 1) {
+                return radialScale(d3.sum(lengthDict.slice(1).map(d => d.value))) 
+              } else {
+                return radialScale(lengthDict[0].value) 
+              }
+            })
+            .strength(0.05))
+            .alpha(1)
+            .restart()
+
+
+        } else if (cut == "two") {
+          simulation.nodes(data)
+            .force("r", d3.forceRadial(d => {
+              if (d['appearances'] >= 2) {
+                return radialScale(d3.sum(lengthDict.slice(2).map(d => d.value))) 
+              } else if (d['appearances'] >= 1) {
+                return radialScale(lengthDict[1].value) 
+              } else {
+                return radialScale(lengthDict[0].value) 
+              }
+            })
+            .strength(0.05))
+            .alpha(1)
+            .restart()
+
+            
+        } else if (cut == "three") {
+          simulation.nodes(data)
+            .force("r", d3.forceRadial(d => {
+              if (d['appearances'] >= 3) {
+                return radialScale(d3.sum(lengthDict.slice(3).map(d => d.value))) 
+              } else if (d['appearances'] == 2) {
+                return radialScale(lengthDict[2].value) 
+              } else if (d['appearances'] >= 1) {
+                return radialScale(lengthDict[1].value) 
+              } else {
+                return radialScale(lengthDict[0].value) 
+              }
+            })
+            .strength(0.05))
+            .alpha(1)
+            .restart()
+
+        } else if (cut == "four") {
+          simulation.nodes(data)
+            .force("r", d3.forceRadial(d => {
+              if (d['appearances'] >= 4) {
+                return radialScale(d3.sum(lengthDict.slice(4).map(d => d.value))) 
+              } else if (d['appearances'] == 3) {
+                 return radialScale(lengthDict[3].value) 
+              } else if (d['appearances'] == 2) {
+                return radialScale(lengthDict[2].value) 
+              } else if (d['appearances'] >= 1) {
+                return radialScale(lengthDict[1].value) 
+              } else {
+                return radialScale(lengthDict[0].value) 
+              }
+            })
+            .strength(0.05))
+            .alpha(1)
+            .restart()
+
+        }
+
+
+
+        function ticked() {
+          //console.log("ticking")
+          //console.log(counter)
+          counter += 1
+          if (counter >= 300) {
+            calculated = true
+          }
+
+
+          node
+          .attr("cx", function(d){ return d.x + chartWidth/2; })
+          .attr("cy", function(d){ return d.y + chartHeight/2; })
+          
+          
+        }
       }
+
+      
 
       function chart(container) {
         const data = container.datum()
         enter({ container, data })
+        updateScales({ container, data })
         updateDom({ container, data })
 
       }
@@ -73,9 +277,17 @@ export default class Coordinator extends Component {
         chartHeight = height - margin.top - margin.bottom
         return chart
       }
+
+      chart.cut = function(...args) {
+        cut = args[0]
+        return chart
+      }
+
+
       return chart
 
     }
+
     function init() {
 
     
@@ -84,7 +296,7 @@ export default class Coordinator extends Component {
    
       el.datum(data)
       resize()
-
+      bee()
 
       window.addEventListener('resize', resize)
       //graphic.select('.slider input').on('input', handleInput)
@@ -94,34 +306,62 @@ export default class Coordinator extends Component {
 
     init()
     function bee() {
+      console.log("getting inside bee")
+      chart.cut("bee")
+      el.call(chart)
 
     }
+    function zero() {
+      console.log("getting inside zero")
+      chart.cut("zero")
+      el.call(chart)
 
+    }
     function one() {
+      console.log("getting inside one")
+      chart.cut("one")
+      el.call(chart)
 
     }
 
     function two() {
+      console.log("getting inside two")
+      chart.cut("two")
+      el.call(chart)
 
     }
 
     function three() {
+      console.log("getting inside three")
+      chart.cut("three")
+      el.call(chart)
 
     }
 
     function four() {
+      console.log("getting inside four")
+      chart.cut("four")
+      el.call(chart)
 
     }
 
     function placements() {
+      console.log("getting inside placements")
+      chart.cut("placements")
+      el.call(chart)
 
     }
 
     function age() {
+      console.log("getting inside age")
+      chart.cut("age")
+      el.call(chart)
 
     }
 
     function map() {
+      chart.cut("map")
+      el.call(chart)
 
     }
 
@@ -131,13 +371,14 @@ export default class Coordinator extends Component {
       activateFunctions[i] = function () {};
     }
     activateFunctions[0] = bee;
-    activateFunctions[1] = one;
-    activateFunctions[2] = two;
-    activateFunctions[3] = three;
-    activateFunctions[4] = four;
-    activateFunctions[5] = placements;
-    activateFunctions[6] = age;
-    activateFunctions[7] = map;
+    activateFunctions[1] = zero;
+    activateFunctions[2] = one;
+    activateFunctions[3] = two;
+    activateFunctions[4] = three;
+    activateFunctions[5] = four;
+    activateFunctions[6] = placements;
+    activateFunctions[7] = age;
+    activateFunctions[8] = map;
 
 
     var scroll = scroller()

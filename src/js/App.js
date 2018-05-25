@@ -35,7 +35,7 @@ class App extends Component {
 
   componentDidMount() {
     const files = ["data/2018spellers.json", "data/results.csv", "data/levenshtein.csv"]
-    const types = [this.type, this.type, this.type2]
+    const types = [this.type3, this.type, this.type2]
     const csvPattern = new RegExp(".csv$")
     const jsonPattern = new RegExp(".json$")
     Promise.all(files.map((url,i) => {
@@ -61,6 +61,13 @@ class App extends Component {
 
   type2(d) {
     d['frequency'] = +d['frequency']
+    return d
+  }
+
+  type3(d) {
+    console.log(d)
+    d['beex'] = +d['beex']
+    d['beey'] = +d['beey']
     return d
   }
 

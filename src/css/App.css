@@ -85,6 +85,7 @@
   content: "";
   display: table;
   clear: both;
+  width: 100%;
 }
 
 .step {
@@ -92,29 +93,51 @@
   display: block;
   margin-bottom: 100px;
   padding: 1em;
-  max-width: 450px;
+  max-width: 500px;
 }
 
 .step:first-child {
-  margin-top: 5vh;
+  padding-top: 5vh;
   margin-bottom: 5vh;
 }
 
 .sections {
-  float: left;
-  display: inline-block;
-  max-width: 35vw;
-  z-index: 1;
-  margin-left: 5vw;
+  position: relative;
+  left: 0;
+  max-width: 35%;
+  z-index: 100;
+  margin-left: 5%;
+
 
 
 }
 
 .viz {
-  float: right;
-  width: 60vw;
+  width: 60%;
   height: 100vh;
+  right: 0;
+  position: fixed;
+  z-index: 1;
 
+}
+
+.is_fixed {
+  position: fixed !important;
+  top: 0;
+
+}
+
+
+
+.is_unfixed {
+  position: absolute !important;
+
+}
+
+.is_bottom {
+  position: absolute;
+  top: auto;
+  bottom: 0;
 }
 
 .prose {
@@ -168,12 +191,18 @@ a:visited {
   max-width: 550px;
 }
 
+.node {
+  fill: #F7C377;
+  stroke: #E49F4F;
+}
+
 @media only screen and (max-width: 1000px) { 
   .sections {
     float: none;
-    max-width: 450px;
+    max-width: 550px;
     display: block;
     margin: auto;
+    z-index: 2;
   
   }
 
@@ -185,7 +214,8 @@ a:visited {
   .viz {
     left: 0;
     right: 0;
-    width: auto;
+    width: 100%;
+    z-index: 1;
   }
 
 
