@@ -7,7 +7,10 @@
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
     "react-ga": "^2.5.2",
-    "react-scripts": "1.1.4"
+    "react-scripts": "1.1.4",
+    "topojson": "^3.0.2",
+    "topojson-client": "^3.0.0",
+    "write-json-file": "^2.3.0"
   },
   "scripts": {
     "start": "react-scripts start",

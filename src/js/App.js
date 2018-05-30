@@ -34,15 +34,15 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const files = ["data/2018spellers.json", "data/results.csv", "data/levenshtein.csv"]
-    const types = [this.type3, this.type, this.type2]
+    const files = ["data/2018spellers.json", "data/results.csv", "data/levenshtein.csv", "https://d3js.org/us-10m.v1.json"]
+    const types = [this.type3, this.type, this.type2, this.type]
     const csvPattern = new RegExp(".csv$")
     const jsonPattern = new RegExp(".json$")
     Promise.all(files.map((url,i) => {
       if (csvPattern.test(url)) {
         return d3.csv(url, types[i].bind(this))
       } else if (jsonPattern.test(url)) {
-        return d3.json(url, types[i].bind(this))
+        return d3.json(url)
       } else {
          return d3.tsv(url, types[i].bind(this))
       }
@@ -51,6 +51,7 @@ class App extends Component {
         spellers: values[0],
         results: values[1],
         levenshtein: values[2],
+        usmap: values[3]
       })
     })
   }
@@ -64,18 +65,13 @@ class App extends Component {
     return d
   }
 
-  type3(d) {
-    console.log(d)
-    d['beex'] = +d['beex']
-    d['beey'] = +d['beey']
-    return d
-  }
+ 
 
   render() {
-    const {profileimages, spellers, results, levenshtein} = this.state
+    const {profileimages, spellers, results, levenshtein, usmap} = this.state
     let coordinator
     if (profileimages && spellers) {
-      coordinator = <Coordinator profileimages={profileimages} data={spellers} />
+      coordinator = <Coordinator profileimages={profileimages} data={spellers} us={usmap}/>
     }
     return (
       <div className="content">
@@ -170,6 +166,10 @@ class App extends Component {
               <p className="prose">
                 And here's where they're from
               </p>
+          
+            </section>
+            <section className="step">
+             
           
             </section>
           </div>

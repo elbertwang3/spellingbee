@@ -1,16 +1,17 @@
-
 import React, {Component}  from 'react';
 import '../../css/App.css';
 import * as d3 from 'd3';
 import ReactDOM from 'react-dom';
 import {scroller} from '../scripts/scroller.js';
+import * as topojson from "topojson-client";
+import Tooltip from './Tooltip.js';
 
 export default class Coordinator extends Component {
 	constructor(props){
 	  super(props);
 
     this.state = {
-     
+      currSpellerData: null,
 
     };
   }
@@ -21,18 +22,15 @@ export default class Coordinator extends Component {
 
     
     const that = this
-    const {profileimages, data} = this.props
+    const {profileimages, data, us} = this.props
     const margin = {top: 25, bottom: 25, right: 25, left: 25}
 
     const lengthDict = d3.nest()
       .key(function(d) { return d['appearances']; })
       .rollup(function(v) { return v.length; })
       .entries(data)
-  
-    console.log(data)
-    console.log(lengthDict)
 
-
+    const ringDict = {0:1.2, 1:1.2, 2:1.2, 3:1.2, 4:1.2}
 
     let chart = coordinatorchart()
     const el = d3.select('.coordinator')
@@ -56,6 +54,27 @@ export default class Coordinator extends Component {
     const radialScale = d3.scaleSqrt()
     const radiusScale = d3.scalePow().exponent(2)
     const offsetScale = d3.scaleLinear()
+    const swarmScalePlX = d3.scaleLinear()
+    const swarmScalePlY = d3.scaleLinear()
+    const swarmScaleAgeX = d3.scaleLinear()
+    const swarmScaleAgeY = d3.scaleLinear()
+
+
+    const appearanceScale = d3.scaleSqrt()
+    const appearanceScale2 = d3.scaleSqrt()
+
+    const placementScale = d3.scaleLinear()
+    const ageScale = d3.scaleLinear()
+
+    let path = d3.geoPath();
+
+    /*let tooltip = d3.select("body")
+      .append("div")
+      .attr("class", "tooltip")
+      .on("click",function(){
+        tooltip.style("visibility",null);
+      });*/
+
 
     
     
@@ -92,10 +111,11 @@ export default class Coordinator extends Component {
         gEnter.append("g").attr("class", "nodes")
         gEnter.append("g").attr("class", "rings")
 
-        const axis = gEnter.append('g').attr('class', 'g-axis')
-        axis.append('g').attr('class', 'axis-x')
+        gEnter.append('g').attr('class', 'g-axis')
 
-        axis.append('g').attr('class', 'axis-y')
+
+
+        gEnter.append("g").attr("class", "states")
 
       }
 
@@ -112,15 +132,48 @@ export default class Coordinator extends Component {
 
         radialScale
           .domain([0, 4])
-          .range([ringsize/2, 10])
+          .range([ringsize/2, ringsize/40])
 
         radiusScale
           .domain([0,4])
-          .range([ringsize/100,ringsize/200])
+          .range([ringsize/100,ringsize/150])
 
-        offsetScale
-          .domain([600,300])
-          .range([1.1,1.2])
+        console.log(chartHeight)
+        appearanceScale
+          .domain([0, 4])
+          .range([chartHeight/300,chartHeight/80]) 
+
+        appearanceScale2
+          .domain([1, 4])
+          .range([4,15]) 
+
+        swarmScalePlX
+          .domain(d3.extent(data, d => d['placement_x']))
+          .range([chartWidth/2 - (d3.mean(data, d => d['placement_x']) - d3.min(data, d => d['placement_x'])), chartWidth/2 + (d3.mean(data, d => d['placement_x'])  - d3.min(data, d => d['placement_x']))])
+
+        swarmScalePlY
+          .domain(d3.extent(data, d => d['placement_y']))
+          .range([0, chartHeight])
+
+
+        swarmScaleAgeX
+          .domain(d3.extent(data, d => d['age_x']))
+          .range([chartWidth/2 - (d3.mean(data, d => d['age_x']) - d3.min(data, d => d['age_x'])), chartWidth/2 + (d3.mean(data, d => d['age_x'])  - d3.min(data, d => d['age_x']))])
+
+        swarmScaleAgeY
+          .domain(d3.extent(data, d => d['age_y']))
+          .range([0, chartHeight])
+
+        
+        placementScale
+          .domain([300,50,25,10,0])
+          .range([chartHeight, chartHeight*3/4, chartHeight/2, chartHeight/4, 0])
+
+        
+        ageScale  
+          .domain(d3.extent(data, d => d['age']))
+          .range([chartHeight, 0])
+  
 
       }
 
@@ -136,42 +189,69 @@ export default class Coordinator extends Component {
 
         g.attr('transform', translate(margin.left, margin.top))
 
+  
+
         const nodes = g.select(".nodes")
         const rings = g.select(".rings")
 
-        /*simulation = d3.forceSimulation(data)
-          .force('charge', d3.forceManyBody().strength(5))
-          .force('center', d3.forceCenter(chartWidth / 2, chartHeight / 2))
-          .force('collision', d3.forceCollide().radius(function(d) {
-            return 3
-          }))
-          .on('tick', ticked)
-
-        console.log(data)
-
-        simulation.nodes(data)
-           .on('tick', ticked)*/
         let node = nodes.selectAll(".node")
           .data(data)
 
         node.exit().remove()
-        console.log(cut)
         if (cut == "bee") {
           simulation.stop()
+          const ring = rings.selectAll(".ring")
+            .data([])
+          ring.exit().remove()
+          
+       
+  
           node
             .enter()
             .append("circle")
-            .attr("class", "node")
-         
+            .attr("class", "node") 
+            .attr("opacity", 0)
           .merge(node)
+            .attr("cx", d => beeScaleX(d['beex']))
+            .attr("cy", d => beeScaleY(d['beey']))
+            .on("mouseover", d => {
+              const tooltip = d3.select(".tooltip")
 
+              that.setState({currSpellerData: d})
+              tooltip
+              .style("visibility","visible")
+              .style("top",function(d){ 
+                const height = tooltip.node().getBoundingClientRect().height
+                console.log(height)
+                if (d3.event.clientY + height + 20 >= window.innerHeight) {
+                  return (d3.event.clientY - height - 20) +"px"
+                } else {
+                  return (d3.event.clientY + 20) +"px"
+                } 
+                
+                
+              })
+              .style("left",function(d){
+                 const width =  tooltip.node().getBoundingClientRect().width
+                if (d3.event.clientX + width + 20 >= window.innerWidth) {
+                  return (d3.event.clientX - width - 20) +"px"
+                } else {
+                  return (d3.event.clientX + 20) +"px"
+                }
+              })
+            })
+            /*.on("mouseout", d => {
+              d3.select(".tooltip")
+              .style("visibility","hidden")
+
+            })*/
             .transition()
             .duration(1000)
             .attr("r", d => beesize/300)
-            .attr("cx", d => beeScaleX(d['beex']))
-            .attr("cy", d => beeScaleY(d['beey']))
+            .attr("opacity", 1)
+
+            
         } else if (cut == "zero") {
-          
           const ring = rings.selectAll(".ring")
             .data(lengthDict.slice(0,1))
           ring.exit().remove()
@@ -179,17 +259,22 @@ export default class Coordinator extends Component {
             .enter()
             .append("circle")
             .attr("class", "ring")
-          .merge(ring)
-            .attr("r", (d,i) => radialScale(i))
+         .merge(ring)
+            .attr("r", (d,i) => radialScale(i) * ringDict[i])
             .attr("cx", chartWidth/2)
             .attr("cy", chartHeight/2)
 
           simulation.nodes(data)
             .force("charge", d3.forceCollide().radius(d => radiusScale(d['appearances']) * 1.5))
-            .force("r", d3.forceRadial(radialScale(0)).strength(0.05))
+            .force("r", d3.forceRadial(radialScale(0)).strength(0.1))
             .on("tick", ticked)
             .alpha(1)
             .restart()
+
+          node
+            .transition()
+            .duration(500)
+            .attr("r", d => radiusScale(d['appearances']))
 
         } else if (cut == "one") {
           const ring = rings.selectAll(".ring")
@@ -200,7 +285,7 @@ export default class Coordinator extends Component {
             .append("circle")
             .attr("class", "ring")
           .merge(ring)
-            .attr("r", (d,i) => radialScale(i))
+            .attr("r", (d,i) => radialScale(i) * ringDict[i])
             .attr("cx", chartWidth/2)
             .attr("cy", chartHeight/2)
 
@@ -212,7 +297,7 @@ export default class Coordinator extends Component {
                 return radialScale(d['appearances'])
               }
             })
-            .strength(0.05))
+            .strength(0.1))
             .alpha(1)
             .restart()
 
@@ -226,7 +311,7 @@ export default class Coordinator extends Component {
             .append("circle")
             .attr("class", "ring")
           .merge(ring)
-            .attr("r", (d,i) => radialScale(i))
+            .attr("r", (d,i) => radialScale(i) * ringDict[i])
             .attr("cx", chartWidth/2)
             .attr("cy", chartHeight/2)
 
@@ -238,7 +323,7 @@ export default class Coordinator extends Component {
                 return radialScale(d['appearances'])
               }
             })
-            .strength(0.05))
+            .strength(0.1))
             .alpha(1)
             .restart()
 
@@ -252,7 +337,7 @@ export default class Coordinator extends Component {
             .append("circle")
             .attr("class", "ring")
           .merge(ring)
-            .attr("r", (d,i) => radialScale(i))
+            .attr("r", (d,i) => radialScale(i) * ringDict[i])
             .attr("cx", chartWidth/2)
             .attr("cy", chartHeight/2)
           simulation.nodes(data)
@@ -263,12 +348,11 @@ export default class Coordinator extends Component {
                 return radialScale(d['appearances'])
               }
             })
-            .strength(0.05))
+            .strength(0.1))
             .alpha(1)
             .restart()
 
         } else if (cut == "four") {
-
           const ring = rings.selectAll(".ring")
             .data(lengthDict)
           ring.exit().remove()
@@ -277,54 +361,117 @@ export default class Coordinator extends Component {
             .append("circle")
             .attr("class", "ring")
           .merge(ring)
-            .attr("r", (d,i) => radialScale(i))
+            .attr("r", (d,i) => radialScale(i) * ringDict[i])
             .attr("cx", chartWidth/2)
             .attr("cy", chartHeight/2)
-          
-    
 
+          let node = nodes.selectAll(".node")
+            .data(data)
+
+          node.exit().remove()
+          node
+            .enter()
+            .append("circle")
+            .attr("class", "node")
+          .merge(node)
+            .attr("r", d => radiusScale(d['appearances']))
+
+          simulation.nodes(data)
+            .force("r", d3.forceRadial(d => radialScale(d['appearances'])).strength(0.1))
+            .alpha(1)
+            .restart()
+
+
+        } else if (cut == "placements") {
+          simulation.stop()
+          const ring = rings.selectAll(".ring")
+            .data([])
+          ring.exit().remove()
+
+         
+            //.data()
+
+          const middle = g.selectAll(".middle-line")
+            .data([data])
+          
+          middle.exit().remove()
+          middle
+            .enter()
+            .append("line")
+            .attr("class", "middle-line")
+          .merge(middle)
+            .attr("x1", chartWidth/2)
+            .attr("x2", chartWidth/2)
+            .attr('y1', 0)
+            .attr("y2", chartHeight)
+
+        
+          let node = nodes.selectAll(".node")
+            .data(data.filter(d => d['best_placement'] != null))
+          node.exit().remove()
+          node
+            .enter()
+            .append("circle")
+            .attr("class", "node")
+          .merge(node)
+            .transition()
+            .duration(1000)
+            .attr("r", d => appearanceScale2(d['appearances']))
+            .attr("cx", d => {  return swarmScalePlX(d['placement_x'])})
+            .attr("cy", d => {  return swarmScalePlY(d['placement_y'])})
+
+          d3.select("g-axis").call(d3.axisLeft(placementScale)
+            .tickValues([500,100,10,5,3,2,1]))
+            .attr("class", "intro-ranking-axis")
+
+
+
+        } else if (cut == "age") {
+          let node = nodes.selectAll(".node")
+            .data(data)
+          node.exit().remove()
+          node
+            .enter()
+            .append("circle")
+            .attr("class", "node")
+          .merge(node)
+            .transition()
+            .duration(1000)
+            .attr("r", d => appearanceScale(d['appearances']))
+            .attr("cx", d => {  return swarmScaleAgeX(d['age_x'])})
+            .attr("cy", d => {  return swarmScaleAgeY(d['age_y'])})
           
 
+
+        } else if (cut == "map") {
+          console.log(map)
+
+          const states = svg.select(".states")
+          states
+          .selectAll("path")
+          .data(topojson.feature(us, us.objects.states).features)
+          .enter().append("path")
+            .attr("d", path);
+
+        states.append("path")
+            .attr("class", "state-borders")
+            .attr("d", path(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; })));
         }
 
 
 
+
         function ticked() {
-          console.log("ticking")
-          //console.log(counter)
-          counter += 1
-          if (counter >= 300) {
-            calculated = true
-          }
+          d3.selectAll(".node")
+            .attr("cx", d => d['appearances'] == 4 && cut == "four" ? d.x + chartWidth/2 + radialScale(4) : d.x + chartWidth/2)
+            .attr("cy", d => d['appearances'] == 4 && cut == "four" ? d.y + chartHeight/2 - radialScale(4)/2 : d.y + chartHeight/2) 
+            .attr("r", d => radiusScale(d['appearances']))   
+        }
 
-
-          if (cut != "four") {
-            node
-              .attr("cx", function(d){ return d.x + chartWidth/2; })
-              .attr("cy", function(d){ return d.y + chartHeight/2; })
-              .attr("r", d => radiusScale(d['appearances']))
-          } else {
-
-            console.log(node
-             .filter(d => d['appearances'] != 4))
-            node
-             .filter(d => d['appearances'] != 4)
-              .attr("cx", function(d){ return d.x + chartWidth/2; })
-              .attr("cy", function(d){ return d.y + chartHeight/2; })
-              .attr("r", d => radiusScale(d['appearances']))
-
-            node
-              .filter(d => d['appearances'] == 4)
-              .transition()
-              .duration(1000)
-              .attr("cx", chartWidth/2)
-              .attr("cy", chartHeight/2)
-
-          }
-          
-
-          
-          
+        function ticked2() {
+          d3.selectAll(".node")
+            .attr("cx", d => d.x)
+            .attr("cy", d => d.y)
         }
       }
 
@@ -465,9 +612,9 @@ export default class Coordinator extends Component {
       d3.selectAll('#sections1 .step')
         .style('opacity', function (d, i) {
           if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 600) {
-              return i === index ? 0.8 : 0.8;
+              return i === index ? 0.8 : 0.1;
           } else {
-            return i === index ? 1 : 1;
+            return i === index ? 1 : 0.1;
           }
         });
         activate(index);
@@ -509,7 +656,17 @@ export default class Coordinator extends Component {
 
 
   render() {
+    let tooltip
+    const {currSpellerData, tooltipStyle} = this.state
+    if (this.state.currSpellerData != null) {
+
+        tooltip = <Tooltip data={currSpellerData} tooltipStyle={tooltipStyle} />
+      } else {
+
+        tooltip = <Tooltip tooltipStyle={tooltipStyle} />
+      }
     return <div className="coordinator">
+      {tooltip}
     </div>
   }
 }
