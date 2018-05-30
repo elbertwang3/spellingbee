@@ -428,8 +428,8 @@ export default class Coordinator extends Component {
             console.log(node.exit())*/  
             
             data.forEach(d => {
-              d.x = -chartWidth/4
-              d.y = -chartHeight/4
+              d.x = Math.floor(Math.random() * chartWidth) - chartWidth/2;
+              d.y = Math.floor(Math.random() * chartHeight) - chartHeight/2;
             })
 
             console.log(data.map(d => [d.x, d.y]))
@@ -453,11 +453,11 @@ export default class Coordinator extends Component {
                 .style("visibility","hidden")
 
             })
-            simulation = d3.forceSimulation()
-            simulation
+            simulation// = d3.forceSimulation()
+            //simulation
               .nodes(data)
               .force("charge", d3.forceCollide().radius(d => ringsize/100 * 1.5))
-              .force("r", d3.forceRadial(d => radialScale(d['appearances'])).strength(1))
+              .force("r", d3.forceRadial(d => radialScale(d['appearances'])))
               .force("x", null)
               .force("y", null)
               .force("collide", null)
