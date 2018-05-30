@@ -70,12 +70,10 @@ export default class Coordinator extends Component {
 
     let prevCut 
     const annos = ["everyone", "at least one appearance", "two", "three", "four"]
-    /*let tooltip = d3.select("body")
-      .append("div")
-      .attr("class", "tooltip")
+    d3.select(".tooltip")
       .on("click",function(){
-        tooltip.style("visibility",null);
-      });*/
+        d3.select(this).style("visibility",null);
+      });
 
 
     
@@ -141,8 +139,8 @@ export default class Coordinator extends Component {
           .range([ringsize/100,ringsize/150])
 
         appearanceScale
-          .domain([0, 4])
-          .range([chartHeight/300,chartHeight/80]) 
+          .domain([0,1, 4])
+          .range([chartHeight/300,chartHeight/200,chartHeight/50]) 
 
         appearanceScale2
           .domain([1, 4])
@@ -167,7 +165,7 @@ export default class Coordinator extends Component {
 
         
         placementScale
-          .domain([300,50,25,10,0])
+          .domain([300,50,25,10,1])
           .range([chartHeight, chartHeight*3/4, chartHeight/2, chartHeight/4, 0])
 
         
@@ -481,74 +479,84 @@ export default class Coordinator extends Component {
             .duration(1000)
             .attr("opacity", 1)
 
-          let node = nodes.selectAll(".node")
-            .data(data, d => d['speller_number'])
-
-          node.exit().remove()
-          node
-            .enter()
-            .append("circle")
-            .attr("class", "node")
-          .merge(node)
-            .attr("r", ringsize/100)
-
-          
-          if (prevCut != "placements") {
-            simulation.nodes(data)
-              .force("charge", d3.forceCollide().radius(d => ringsize/100 * 1.5))
-              .force("r", d3.forceRadial(d => radialScale(d['appearances'])).strength(0.1))
-              .force("x", d3.forceX().strength(0))
-              .force("y", d3.forceY().strength(0))
-              .on("tick", ticked)
-              .on('end', end)
-              .alpha(1)
-              .alphaDecay(1)
-              .restart()
-          } else {
-            simulation.nodes(data)
-              .force("charge", d3.forceCollide().radius(d => ringsize/100 * 1.5))
-              .force("r", d3.forceRadial(d => radialScale(d['appearances'])).strength(0.75))
-              .force("x", d3.forceX().strength(0))
-              .force("y", d3.forceY().strength(0))
-              .alpha(1)
-              .alphaDecay(0.05)
-              .on('end', end)
-              .stop()
-              
-              for (var i = 0; i < 120; ++i) simulation.tick();
-
-
-            let node = nodes.selectAll(".node")
+           let node = nodes.selectAll(".node")
               .data(data, d => d['speller_number'])
 
             node.exit().remove()
             node
               .enter()
               .append("circle")
+              .attr("class", "node")  
+              .attr("cx", () => { console.log("initializing"); return chartWidth/2})
+              .attr("cy", chartHeight/2)
             .merge(node)
-              .filter(d => d['appearances'] != 4)
-              .attr("opacity", 0)
-              .attr("cx", d => d.x + chartWidth/2)
-              .attr("cy", d => d.y + chartHeight/2)
-              .transition()
-              .duration(1000)
-              .attr('opacity', 1)
-              .attr("r", d => ringsize/100)
 
+           simulation.nodes(data)
+              .force("charge", d3.forceCollide().radius(d => ringsize/100 * 1.5))
+              .force("r", d3.forceRadial(d => radialScale(d['appearances'])).strength(prevCut == "placements" ? 0.5 : 0.1))
+              .force("x", null)
+              .force("y", null)
+              .on("tick", ticked)
+              .on('end', end)
+              .alpha(1)
+              .alphaDecay(prevCut == "placements" ? 0.1 : 1)
+              .restart()
+          
+          /*if (prevCut != "placements") {
+            simulation.nodes(data)
+              .force("charge", d3.forceCollide().radius(d => ringsize/100 * 1.5))
+              .force("r", d3.forceRadial(d => radialScale(d['appearances'])).strength(0.1))
+              .force("x", null)
+              .force("y", null)
+              .on("tick", ticked)
+              .on('end', end)
+              .alpha(1)
+              .alphaDecay(1)
+              .restart()
+          } else {
 
-          d3.selectAll(".node")
-            .filter(d => d['appearances'] == 4)
-            .attr("opacity", 0)
-             .attr("cx", chartWidth/2)
-            .attr("cy", chartHeight/2) 
-            .transition()
-            .duration(1000)
-            .attr('opacity', 1)
-            .attr("r", ringsize/100)
-
+            simulation.nodes(data)
+              .force("charge", d3.forceCollide().radius(d => ringsize/100 * 1.5))
+              .force("r", d3.forceRadial(d => radialScale(d['appearances'])).strength(0.75))
+              .force("x", d3.forceX().strength(0))
+              .force("y", d3.forceY().strength(0))
+              .alpha(1)
+              .alphaDecay(0.0228)
+              .on('end', end)
+              .stop()
               
+              for (var i = 0; i < 120; ++i) simulation.tick();
 
-          }
+
+              let node = nodes.selectAll(".node")
+                .data(data, d => d['speller_number'])
+
+              node.exit().remove()
+              node
+                .enter()
+                .append("circle")
+                .attr("class", "node")
+              .merge(node)
+                .filter(d => d['appearances'] != 4)
+                .attr("opacity", 0)
+                .attr("cx", d => d.x + chartWidth/2)
+                .attr("cy", d => d.y + chartHeight/2)
+                .transition()
+                .duration(1000)
+                .attr('opacity', 1)
+                .attr("r", d => ringsize/100)
+
+
+              d3.selectAll(".node")
+                .filter(d => d['appearances'] == 4)
+                .attr("opacity", 0)
+                 .attr("cx", chartWidth/2)
+                .attr("cy", chartHeight/2) 
+                .transition()
+                .duration(1000)
+                .attr('opacity', 1)
+                .attr("r", ringsize/100)
+          }*/
 
 
         } else if (cut == "placements") {
@@ -587,19 +595,19 @@ export default class Coordinator extends Component {
 
           simulation.nodes(placementOnly)
             .force("charge", d3.forceCollide(d => appearanceScale(d['appearances']) + 1))
-            //.force("r", d3.forceRadial().strength(0))
+            .force("r", null)
             .force("x", d3.forceX(d => chartWidth/2).strength(1))
             .force("y", d3.forceY(d => placementScale(d['best_placement'])).strength(1))
 
-            .on("tick", ticked2)
+            //.on("tick", ticked2)
             .on('end', null)
             .alpha(1)
             .alphaDecay(0.0228)
-            .restart()
-            //.stop()
+            //.restart()
+            .stop()
           console.log(placementOnly)
 
-          /*for (var i = 0; i < 120; ++i) simulation.tick();
+          for (var i = 0; i < 300; ++i) simulation.tick();
 
           node
             .enter()
@@ -609,43 +617,51 @@ export default class Coordinator extends Component {
             .duration(1000)
             .attr("cx", d => d.x)
             .attr("cy", d => d.y)
-            .attr("r", d => appearanceScale(d['appearances']))*/
+            .attr("r", d => appearanceScale(d['appearances']))
 
-          /*let node = nodes.selectAll(".node")
-            .data(data.filter(d => d['best_placement'] != null))
+          axis.call(d3.axisLeft(placementScale)
+            .tickValues([300,50,25,10,1]))
+
+
+
+        } else if (cut == "age") {
+
+      
+          
+
+          simulation.nodes(data)
+            .force("charge", d3.forceCollide(d => appearanceScale(d['appearances']) + 1))
+            .force("r", null)
+            .force("x", d3.forceX(d => chartWidth/2).strength(1))
+            .force("y", d3.forceY(d => ageScale(d['age'])).strength(1))
+            .on('end', null)
+            .alpha(1)
+            .alphaDecay(0.0228)
+            //.restart()
+            .stop()
+
+          for (var i = 0; i < 300; ++i) simulation.tick();
+
+          let node = nodes.selectAll(".node")
+            .data(data, d => d['speller_number'])
           node.exit().remove()
           node
             .enter()
             .append("circle")
             .attr("class", "node")
+            .attr("opacity", 0)
+            .attr("cx", d => d.x)
+            .attr("cy", d => d.y)
           .merge(node)
             .transition()
             .duration(1000)
-            .attr("r", d => appearanceScale2(d['appearances']))
-            .attr("cx", d => {  return swarmScalePlX(d['placement_x'])})
-            .attr("cy", d => {  return swarmScalePlY(d['placement_y'])})*/
+            .attr("opacity", 1)
+            .attr("cx", d => d.x)
+            .attr("cy", d => d.y)
+            .attr("r", d => appearanceScale(d['appearances']))
 
           axis.call(d3.axisLeft(placementScale)
-            .tickValues([300,50,25,10,0]))
-            //.attr("class", "intro-ranking-axis")
-
-
-
-        } else if (cut == "age") {
-          let node = nodes.selectAll(".node")
-            .data(data, d => d['speller_number'])
-          node.exit().remove()
-          //axis.call(d3.axisLeft()
-          /*node
-            .enter()
-            .append("circle")
-            .attr("class", "node")
-          .merge(node)
-            .transition()
-            .duration(1000)
-            .attr("r", d => appearanceScale(d['appearances']))
-            .attr("cx", d => {  return swarmScaleAgeX(d['age_x'])})
-            .attr("cy", d => {  return swarmScaleAgeY(d['age_y'])})*/
+            .tickValues([300,50,25,10,1]))
           
 
 
@@ -672,7 +688,7 @@ export default class Coordinator extends Component {
             .attr("cx", d => d['appearances'] == 4 && cut == "four" ? d.x + chartWidth/2 + radialScale(4) : d.x + chartWidth/2)
             .attr("cy", d => d['appearances'] == 4 && cut == "four" ? d.y + chartHeight/2 - radialScale(4)/2 : d.y + chartHeight/2) 
             .attr("r", ringsize/100)*/
-
+          console.log("ticked1")
           d3.selectAll(".node")
             .attr("cx", d => d.x + chartWidth/2)
             .attr("cy", d => d.y + chartHeight/2) 
@@ -692,7 +708,7 @@ export default class Coordinator extends Component {
         }
 
         function ticked2() {
-          console.log("ticking")
+          console.log("ticked2")
           d3.selectAll(".node")
             .attr("cx", d => d.x)
             .attr("cy", d => d.y)
