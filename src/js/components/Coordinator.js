@@ -220,30 +220,7 @@ export default class Coordinator extends Component {
             .attr("cx", d => beeScaleX(d['beex']))
             .attr("cy", d => beeScaleY(d['beey']))
             .on("mouseover", d => {
-              const tooltip = d3.select(".tooltip")
-
-              that.setState({currSpellerData: d})
-              tooltip
-              .style("visibility","visible")
-              .style("top",function(d){ 
-                const height = tooltip.node().getBoundingClientRect().height
-                console.log(height)
-                if (d3.event.clientY + height + 20 >= window.innerHeight) {
-                  return (d3.event.clientY - height - 20) +"px"
-                } else {
-                  return (d3.event.clientY + 20) +"px"
-                } 
-                
-                
-              })
-              .style("left",function(d){
-                 const width =  tooltip.node().getBoundingClientRect().width
-                if (d3.event.clientX + width + 20 >= window.innerWidth) {
-                  return (d3.event.clientX - width - 20) +"px"
-                } else {
-                  return (d3.event.clientX + 20) +"px"
-                }
-              })
+              mouseOverEvents(d)
             })
             .on("mouseout", d => {
               d3.select(".tooltip")
@@ -487,19 +464,30 @@ export default class Coordinator extends Component {
               .enter()
               .append("circle")
               .attr("class", "node")  
-              .attr("cx", () => { console.log("initializing"); return chartWidth/2})
+              .attr("cx", () => {  return chartWidth/2})
               .attr("cy", chartHeight/2)
             .merge(node)
+              .on("mouseover", d => {
+                mouseOverEvents(d)
+              })
+              .on("mouseout", d => {
+                d3.select(".tooltip")
+                .style("visibility","hidden")
 
-           simulation.nodes(data)
+              })
+
+            console.log(chartWidth/2)
+            console.log(chartHeight/2)
+            simulation.nodes(data)
               .force("charge", d3.forceCollide().radius(d => ringsize/100 * 1.5))
               .force("r", d3.forceRadial(d => radialScale(d['appearances'])).strength(prevCut == "placements" ? 0.5 : 0.1))
               .force("x", null)
               .force("y", null)
+              .force("collide", null)
               .on("tick", ticked)
               .on('end', end)
               .alpha(1)
-              .alphaDecay(prevCut == "placements" ? 0.1 : 1)
+              .alphaDecay(prevCut == "placements" ? 0.0228 : 1)
               .restart()
           
           /*if (prevCut != "placements") {
@@ -528,10 +516,6 @@ export default class Coordinator extends Component {
               for (var i = 0; i < 120; ++i) simulation.tick();
 
 
-              let node = nodes.selectAll(".node")
-                .data(data, d => d['speller_number'])
-
-              node.exit().remove()
               node
                 .enter()
                 .append("circle")
@@ -588,14 +572,14 @@ export default class Coordinator extends Component {
 
 
           const placementOnly = data.filter(d => d['best_placement'] != null)
-          console.log(placementOnly)
           let node = nodes.selectAll(".node")
             .data(placementOnly, d => d['speller_number'])
           node.exit().remove()
 
           simulation.nodes(placementOnly)
-            .force("charge", d3.forceCollide(d => appearanceScale(d['appearances']) + 1))
+            .force("collide", d3.forceCollide(d => appearanceScale(d['appearances']) + 1))
             .force("r", null)
+            .force("charge", null)
             .force("x", d3.forceX(d => chartWidth/2).strength(1))
             .force("y", d3.forceY(d => placementScale(d['best_placement'])).strength(1))
 
@@ -605,7 +589,7 @@ export default class Coordinator extends Component {
             .alphaDecay(0.0228)
             //.restart()
             .stop()
-          console.log(placementOnly)
+
 
           for (var i = 0; i < 300; ++i) simulation.tick();
 
@@ -619,28 +603,30 @@ export default class Coordinator extends Component {
             .attr("cy", d => d.y)
             .attr("r", d => appearanceScale(d['appearances']))
 
-          axis.call(d3.axisLeft(placementScale)
+          axis.transition()
+          .duration(1000).call(d3.axisLeft(placementScale)
             .tickValues([300,50,25,10,1]))
 
 
 
         } else if (cut == "age") {
 
-      
+
           
 
           simulation.nodes(data)
-            .force("charge", d3.forceCollide(d => appearanceScale(d['appearances']) + 1))
+            .force("charge", null)
+            .force("collide", d3.forceCollide(d => appearanceScale(d['appearances']) + 1))
             .force("r", null)
             .force("x", d3.forceX(d => chartWidth/2).strength(1))
             .force("y", d3.forceY(d => ageScale(d['age'])).strength(1))
             .on('end', null)
             .alpha(1)
-            .alphaDecay(0.0228)
+            .alphaDecay(0.05)
             //.restart()
             .stop()
 
-          for (var i = 0; i < 300; ++i) simulation.tick();
+          for (var i = 0; i < 150; ++i) simulation.tick();
 
           let node = nodes.selectAll(".node")
             .data(data, d => d['speller_number'])
@@ -653,6 +639,14 @@ export default class Coordinator extends Component {
             .attr("cx", d => d.x)
             .attr("cy", d => d.y)
           .merge(node)
+            .on("mouseover", d => {
+                mouseOverEvents(d)
+            })
+            .on("mouseout", d => {
+              d3.select(".tooltip")
+              .style("visibility","hidden")
+
+            })
             .transition()
             .duration(1000)
             .attr("opacity", 1)
@@ -660,8 +654,11 @@ export default class Coordinator extends Component {
             .attr("cy", d => d.y)
             .attr("r", d => appearanceScale(d['appearances']))
 
-          axis.call(d3.axisLeft(placementScale)
-            .tickValues([300,50,25,10,1]))
+
+          axis.transition()
+          .duration(1000).call(d3.axisLeft(ageScale)
+            .tickValues([8,9,10,11,12,13,14,15])
+              .tickFormat(d3.format("d")))
           
 
 
@@ -680,7 +677,33 @@ export default class Coordinator extends Component {
             .attr("d", path(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; })));
         }
 
+        function mouseOverEvents(d) {
+          const tooltip = d3.select(".tooltip")
 
+          that.setState({currSpellerData: d})
+          tooltip
+          .style("visibility","visible")
+          .style("top",function(d){ 
+            const height = tooltip.node().getBoundingClientRect().height
+
+            if (d3.event.clientY + height + 20 >= window.innerHeight) {
+              return (d3.event.clientY - height - 20) +"px"
+            } else {
+              return (d3.event.clientY + 20) +"px"
+            } 
+            
+            
+          })
+          .style("left",function(d){
+             const width =  tooltip.node().getBoundingClientRect().width
+            if (d3.event.clientX + width + 20 >= window.innerWidth) {
+              return (d3.event.clientX - width - 20) +"px"
+            } else {
+              return (d3.event.clientX + 20) +"px"
+            }
+          })
+
+        }
 
 
         function ticked() {
@@ -688,7 +711,7 @@ export default class Coordinator extends Component {
             .attr("cx", d => d['appearances'] == 4 && cut == "four" ? d.x + chartWidth/2 + radialScale(4) : d.x + chartWidth/2)
             .attr("cy", d => d['appearances'] == 4 && cut == "four" ? d.y + chartHeight/2 - radialScale(4)/2 : d.y + chartHeight/2) 
             .attr("r", ringsize/100)*/
-          console.log("ticked1")
+          console.log(data.map(d => [d.x, d.y]))
           d3.selectAll(".node")
             .attr("cx", d => d.x + chartWidth/2)
             .attr("cy", d => d.y + chartHeight/2) 

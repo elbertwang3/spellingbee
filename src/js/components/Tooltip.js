@@ -22,7 +22,7 @@ export default class Tooltip extends Component {
 
 
 	render() {
-		console.log(this.props.data)
+		//console.log(this.props.data)
 		
 		if (this.props.data == null) {
 			return <div className="tooltip">
