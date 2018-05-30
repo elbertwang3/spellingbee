@@ -243,7 +243,6 @@ a {
 .tooltip {
   position: absolute;
   font-family: 'Roboto';
-  font-size: 14px;
   z-index: 1000000000;
   text-align: left;
   color: #353535;
@@ -255,37 +254,42 @@ a {
   padding: 1em;
   height: auto;
   opacity: 0.7;
-  max-width: 350px;
+  max-width: 250px;
   white-space: nowrap;
   font-size: 11px;
   border-right:1em solid transparent;
 
 }
 .tooltip .photo {
-  padding-right: 0.5em;
-  display: inline-block;
-  vertical-align: middle;
+  display: block;
+  margin: auto;
+}
+
+.tooltip .spellernumber {
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 16px;
+  text-align: center;
+  margin-bottom: 1em;
 }
 .tooltip .content {
-  padding-left: 0.5em;
-  display: inline-block;
-  vertical-align: middle;
-  max-width: 250px;
+
 }
 .tooltip .photo img{
-  width: 100px;
+  width: 150px;
+  display: block;
+  margin: auto;
 }
 
 .tooltip .tooltip-header {
   font-family: "Roboto";
   font-weight: 700;
   font-size: 14px;
-  border-bottom: 1px solid #a1a1a1;
-  margin-bottom: 0.25em;
+  
   text-align: center;
 }
 .clip-circle {
-  clip-path: circle(50px at center);
+  clip-path: circle(75px at center);
 
 }
 .tooltip .word {
@@ -301,6 +305,12 @@ a {
 .tooltip .sponsor {
   white-space: normal;
   word-wrap: break-word;
+  text-align: center;
+  color: #202020;
+  font-size: 10px;
+  border-bottom: 1px solid #a1a1a1;
+  margin-bottom: 0.25em;
+  padding:0.25em;
 
 }
 .tooltip .previous {

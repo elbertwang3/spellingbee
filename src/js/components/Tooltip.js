@@ -34,12 +34,13 @@ export default class Tooltip extends Component {
 					<img className="clip-circle" src={image_url} alt={{speller_number}.png}></img>
 				</div>
 				<div className="content">
-					<div className="tooltip-header">Speller No. {speller_number}: {firstname} {lastname}</div>
+					<div className="spellernumber">Speller No. {speller_number}</div>
+					<div className="tooltip-header"> {firstname} {lastname}, {age}</div>
+					<div className="sponsor">{display_name}</div>
 					
 					<div className="hometown">hometown: {display_city}, {display_state}</div>
-					<div className="age">age: {age}</div>
-					<div className="school">school: {school_name}</div>
-					<div className="sponsor">sponsor: {display_name}</div>
+					{/*<div className="age">age: {age}</div>
+					<div className="school">school: {school_name}</div>*/}
 					<div className="word">favorite word: {fav_word}</div>
 					<div className="previous">previous bees: {previous_bees}</div>
 
