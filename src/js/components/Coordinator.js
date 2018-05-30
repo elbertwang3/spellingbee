@@ -67,7 +67,7 @@ export default class Coordinator extends Component {
     const ageScale = d3.scaleLinear()
 
     let path = d3.geoPath();
-
+    const annos = ["everyone", "at least one appearance", "two", "three", "four"]
     /*let tooltip = d3.select("body")
       .append("div")
       .attr("class", "tooltip")
@@ -110,7 +110,7 @@ export default class Coordinator extends Component {
         const gEnter = svgEnter.append('g')
         gEnter.append("g").attr("class", "nodes")
         gEnter.append("g").attr("class", "rings")
-
+        gEnter.append("g").attr("class", "annotations")
         gEnter.append('g').attr('class', 'g-axis')
 
 
@@ -193,6 +193,7 @@ export default class Coordinator extends Component {
 
         const nodes = g.select(".nodes")
         const rings = g.select(".rings")
+        const annotations = g.select(".annotations")
 
         let node = nodes.selectAll(".node")
           .data(data)
@@ -203,6 +204,10 @@ export default class Coordinator extends Component {
           const ring = rings.selectAll(".ring")
             .data([])
           ring.exit().remove()
+
+          const annotation = annotations.selectAll(".annotation")
+            .data([])
+          annotation.exit().remove()
           
        
   
@@ -240,11 +245,11 @@ export default class Coordinator extends Component {
                 }
               })
             })
-            /*.on("mouseout", d => {
+            .on("mouseout", d => {
               d3.select(".tooltip")
               .style("visibility","hidden")
 
-            })*/
+            })
             .transition()
             .duration(1000)
             .attr("r", d => beesize/300)
@@ -259,10 +264,34 @@ export default class Coordinator extends Component {
             .enter()
             .append("circle")
             .attr("class", "ring")
+            .attr("opacity", 0)
          .merge(ring)
             .attr("r", (d,i) => radialScale(i) * ringDict[i])
             .attr("cx", chartWidth/2)
             .attr("cy", chartHeight/2)
+            .transition()
+            .duration(1000)
+            .attr("opacity", 1)
+
+          const annotation = annotations.selectAll(".annotation")
+            .data(annos.slice(0,1))
+          annotation.exit().remove()
+          annotation
+            .enter()
+            .append("text")
+            .attr("class", "annotation")
+            .attr("opacity", 0)
+          .merge(annotation)
+            .text(d => d)
+            .attr("x", chartWidth/2)
+            .attr("y", (d, i) => {
+              console.log(radialScale(i))
+              return chartHeight/2 - radialScale(i) * ringDict[i]
+            })
+            .transition()
+            .duration(1000)
+            .attr("opacity", 1)
+
 
           simulation.nodes(data)
             .force("charge", d3.forceCollide().radius(d => radiusScale(d['appearances']) * 1.5))
@@ -284,10 +313,30 @@ export default class Coordinator extends Component {
             .enter()
             .append("circle")
             .attr("class", "ring")
+            .attr("opacity", 0)
           .merge(ring)
             .attr("r", (d,i) => radialScale(i) * ringDict[i])
             .attr("cx", chartWidth/2)
             .attr("cy", chartHeight/2)
+            .transition()
+            .duration(1000)
+            .attr("opacity", 1)
+
+          const annotation = annotations.selectAll(".annotation")
+            .data(annos.slice(0,2))
+          annotation.exit().remove()
+          annotation
+            .enter()
+            .append("text")
+            .attr("class", "annotation")
+            .attr("opacity", 0)
+          .merge(annotation)
+            .text(d => d)
+            .attr("x", chartWidth/2)
+            .attr("y", (d, i) => chartHeight/2 - radialScale(i) * ringDict[i])
+            .transition()
+            .duration(1000)
+            .attr("opacity", 1)
 
           simulation.nodes(data)
             .force("r", d3.forceRadial(d => {
@@ -310,10 +359,30 @@ export default class Coordinator extends Component {
             .enter()
             .append("circle")
             .attr("class", "ring")
+            .attr("opacity", 0)
           .merge(ring)
             .attr("r", (d,i) => radialScale(i) * ringDict[i])
             .attr("cx", chartWidth/2)
             .attr("cy", chartHeight/2)
+            .transition()
+            .duration(1000)
+            .attr("opacity", 1)
+
+          const annotation = annotations.selectAll(".annotation")
+            .data(annos.slice(0,3))
+          annotation.exit().remove()
+          annotation
+            .enter()
+            .append("text")
+            .attr("class", "annotation")
+            .attr("opacity", 0)
+          .merge(annotation)
+            .text(d => d)
+            .attr("x", chartWidth/2)
+            .attr("y", (d, i) => chartHeight/2 - radialScale(i) * ringDict[i])
+            .transition()
+            .duration(1000)
+            .attr("opacity", 1)
 
           simulation.nodes(data)
             .force("r", d3.forceRadial(d => {
@@ -336,10 +405,31 @@ export default class Coordinator extends Component {
             .enter()
             .append("circle")
             .attr("class", "ring")
+            .attr("opacity", 0)
           .merge(ring)
             .attr("r", (d,i) => radialScale(i) * ringDict[i])
             .attr("cx", chartWidth/2)
             .attr("cy", chartHeight/2)
+            .transition()
+            .duration(1000)
+            .attr("opacity", 1)
+
+          const annotation = annotations.selectAll(".annotation")
+            .data(annos.slice(0,4))
+          annotation.exit().remove()
+          annotation
+            .enter()
+            .append("text")
+            .attr("class", "annotation")
+            .attr("opacity", 0)
+          .merge(annotation)
+            .text(d => d)
+            .attr("x", chartWidth/2)
+            .attr("y", (d, i) => chartHeight/2 - radialScale(i) * ringDict[i])
+            .transition()
+            .duration(1000)
+            .attr("opacity", 1)
+
           simulation.nodes(data)
             .force("r", d3.forceRadial(d => {
               if (d['appearances'] >= 3) {
@@ -360,10 +450,30 @@ export default class Coordinator extends Component {
             .enter()
             .append("circle")
             .attr("class", "ring")
+            .attr("opacity", 0)
           .merge(ring)
             .attr("r", (d,i) => radialScale(i) * ringDict[i])
             .attr("cx", chartWidth/2)
             .attr("cy", chartHeight/2)
+            .transition()
+            .duration(1000)
+            .attr("opacity", 1)
+
+          const annotation = annotations.selectAll(".annotation")
+            .data(annos.slice(0,5))
+          annotation.exit().remove()
+          annotation
+            .enter()
+            .append("text")
+            .attr("class", "annotation")
+            .attr("opacity", 0)
+          .merge(annotation)
+            .text(d => d)
+            .attr("x", chartWidth/2)
+            .attr("y", (d, i) => chartHeight/2 - radialScale(i) * ringDict[i])
+            .transition()
+            .duration(1000)
+            .attr("opacity", 1)
 
           let node = nodes.selectAll(".node")
             .data(data)
@@ -387,6 +497,10 @@ export default class Coordinator extends Component {
           const ring = rings.selectAll(".ring")
             .data([])
           ring.exit().remove()
+
+          const annotation = annotations.selectAll(".annotation")
+            .data([])
+          annotation.exit().remove()
 
          
             //.data()

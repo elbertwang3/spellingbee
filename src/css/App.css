@@ -307,6 +307,14 @@ a {
   white-space: normal;
   word-wrap: break-word;
 }
+
+.annotation {
+  font-family: "Roboto";
+  font-size: 12px;
+  font-weight: 700;
+  fill: white;
+  text-anchor: middle;
+}
 @media only screen and (max-width: 1000px) { 
   .sections {
     float: none;
