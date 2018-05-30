@@ -39,11 +39,9 @@ export default class Coordinator extends Component {
     let height = 0
     let chartWidth = 0
     let chartHeight = 0
-    let mapHeight = 0
     let beesize = 0
     let ringsize = 0
     const scaleDown = 1
-    const mapRatio = 0.5
 
     const radius = 3
     let simulation = d3.forceSimulation()
@@ -170,16 +168,10 @@ export default class Coordinator extends Component {
 
         node.exit().remove()
         if (cut == "bee") {
-          simulation.stop()
-          const ring = rings.selectAll(".ring")
-            .data([])
-          ring.exit().remove()
-
-          const annotation = annotations.selectAll(".annotation")
-            .data([])
-          annotation.exit().remove()
-          
-       
+          console.log("bee")
+      
+          states.selectAll(".state-path")
+            .attr("opacity", 0)
   
           node
             .enter()
@@ -187,8 +179,6 @@ export default class Coordinator extends Component {
             .attr("class", "node") 
             .attr("opacity", 0)
           .merge(node)
-
-           
             .on("mouseover", d => {
               mouseOverEvents(d)
             })
@@ -199,13 +189,17 @@ export default class Coordinator extends Component {
             })
             .transition()
             .duration(1000)
-             .attr("cx", d => beeScaleX(d['beex']))
+            .attr("cx", d => beeScaleX(d['beex']))
             .attr("cy", d => beeScaleY(d['beey']))
             .attr("r", d => beesize/300)
             .attr("opacity", 1)
 
             
         } else if (cut == "zero") {
+
+          states.selectAll(".state-path")
+            .attr("opacity", 0)
+
           const ring = rings.selectAll(".ring")
             .data(lengthDict.slice(0,1))
           ring.exit().remove()
@@ -536,23 +530,6 @@ export default class Coordinator extends Component {
             .data([])
           annotation.exit().remove()
 
-         
-            //.data()
-
-          const middle = g.selectAll(".middle-line")
-            .data([data])
-          
-          middle.exit().remove()
-          middle
-            .enter()
-            .append("line")
-            .attr("class", "middle-line")
-          .merge(middle)
-            .attr("x1", chartWidth/2)
-            .attr("x2", chartWidth/2)
-            .attr('y1', 0)
-            .attr("y2", chartHeight)
-
 
           const placementOnly = data.filter(d => d['best_placement'] != null)
           let node = nodes.selectAll(".node")
@@ -648,12 +625,21 @@ export default class Coordinator extends Component {
         } else if (cut == "map") {
           console.log(map)
           simulation.stop()
-          const projection = d3.geoAlbersUsa()
-            .scale(chartWidth)
-            .translate([chartWidth / 2, chartHeight / 2]);
-          /*path.projection(projection)
+          const ring = rings.selectAll(".ring")
+            .data([])
+          ring.exit().remove()
 
-     
+
+          const annotation = annotations.selectAll(".annotation")
+            .data([])
+          annotation.exit().remove()
+
+          const projection = d3.geoAlbersUsa()
+            .scale(width*1.25)
+            .translate([chartWidth / 2, chartHeight / 2]);
+          path.projection(projection)
+        
+
           const state = states.selectAll(".state-path")
             .data(topojson.feature(us, us.objects.states).features)
           state.exit().remove()
@@ -661,16 +647,28 @@ export default class Coordinator extends Component {
             .enter()
             .append("path")
             .attr("class", "state-path")
+         
+            .attr("opacity", 0)
           .merge(state)
             .attr("d", path)
-            .attr("opacity", 0)
-
-          states.append("path")
+            .transition()
+            .duration(1000)
+            .attr("opacity", 1)
+    
+         
+            //.attr("opacity", 0)
+            d3.select(".nodes").moveToFront()
+          /*states.append("path")
               .attr("class", "state-borders")
-              .attr("d", path(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; })))
-              .attr("opacity", 0)*/
+              .attr("d", path(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; })))*/
+              //.attr("opacity", 0)
 
-          //statesonly = data.filter(d => d[''])
+          /*states.selectAll(".state-path")
+      .data(topojson.feature(us, us.objects.states).features)
+      .enter().append("path")
+      .attr("class", "state-path")
+      .attr("d", path)*/
+          
           d3.selectAll(".node")
             .transition()
             .duration(1000)
@@ -775,6 +773,19 @@ export default class Coordinator extends Component {
             .attr("cy", d => d.y)
             .attr("r", d => appearanceScale(d['appearances']))
         }
+        d3.selection.prototype.moveToFront = function() {  
+          return this.each(function(){
+            this.parentNode.appendChild(this);
+          });
+        };
+        d3.selection.prototype.moveToBack = function() {  
+            return this.each(function() { 
+                var firstChild = this.parentNode.firstChild; 
+                if (firstChild) { 
+                    this.parentNode.insertBefore(this, firstChild); 
+                } 
+            });
+        };
       }
 
       
@@ -799,7 +810,6 @@ export default class Coordinator extends Component {
         if (!args.length) return height
         height = args[0]
         chartHeight = height - margin.top - margin.bottom
-        mapHeight = chartHeight/2
         return chart
       }
 

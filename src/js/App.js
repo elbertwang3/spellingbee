@@ -34,7 +34,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const files = ["data/2018spellers.json", "data/results.csv", "data/levenshtein.csv", "https://d3js.org/us-10m.v1.json"]
+    const files = ["data/2018spellers.json", "data/results.csv", "data/levenshtein.csv", "data/us.json"]
     const types = [this.type3, this.type, this.type2, this.type]
     const csvPattern = new RegExp(".csv$")
     const jsonPattern = new RegExp(".json$")
@@ -93,6 +93,13 @@ class App extends Component {
           
             </section>
             <section className="step">
+              <p className="prose">
+                And here's where they're from
+              </p>
+          
+            </section>
+            <section className="step">
+
               <p className="prose">
                 Every May after Memorial Day, the nation’s best spellers descend upon Washington D.C. for a chance to take 
                 home the title of nation's best speller. All of the qualifiers have made it to the national bee by winning a regional bee 
@@ -163,15 +170,10 @@ class App extends Component {
           
             </section>
             <section className="step">
-              <p className="prose">
-                And here's where they're from
-              </p>
+              
           
             </section>
-            <section className="step">
-             
-          
-            </section>
+           
           </div>
         </div>
         <div className="second">
