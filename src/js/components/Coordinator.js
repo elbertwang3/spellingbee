@@ -39,29 +39,24 @@ export default class Coordinator extends Component {
     let height = 0
     let chartWidth = 0
     let chartHeight = 0
+    let mapHeight = 0
     let beesize = 0
     let ringsize = 0
     const scaleDown = 1
+    const mapRatio = 0.5
 
     const radius = 3
     let simulation = d3.forceSimulation()
     let cut 
-    let calculated = false
-    let counter = 0
 
     const beeScaleX = d3.scaleLinear()
     const beeScaleY = d3.scaleLinear()
     const radialScale = d3.scaleSqrt()
-    const radiusScale = d3.scalePow().exponent(2)
     const offsetScale = d3.scaleLinear()
-    const swarmScalePlX = d3.scaleLinear()
-    const swarmScalePlY = d3.scaleLinear()
-    const swarmScaleAgeX = d3.scaleLinear()
-    const swarmScaleAgeY = d3.scaleLinear()
+
 
 
     const appearanceScale = d3.scaleSqrt()
-    const appearanceScale2 = d3.scaleSqrt()
 
     const placementScale = d3.scaleLinear()
     const ageScale = d3.scaleLinear()
@@ -72,7 +67,8 @@ export default class Coordinator extends Component {
     const annos = ["everyone", "at least one appearance", "two", "three", "four"]
     d3.select(".tooltip")
       .on("click",function(){
-        d3.select(this).style("visibility",null);
+        console.log("getting clicked")
+        d3.select(this).style("visibility","hidden");
       });
 
 
@@ -134,34 +130,9 @@ export default class Coordinator extends Component {
           .domain([0, 4])
           .range([ringsize/2, ringsize/40])
 
-        radiusScale
-          .domain([0,4])
-          .range([ringsize/100,ringsize/150])
-
         appearanceScale
           .domain([0,1, 4])
           .range([chartHeight/300,chartHeight/200,chartHeight/50]) 
-
-        appearanceScale2
-          .domain([1, 4])
-          .range([4,15]) 
-
-        swarmScalePlX
-          .domain(d3.extent(data, d => d['placement_x']))
-          .range([chartWidth/2 - (d3.mean(data, d => d['placement_x']) - d3.min(data, d => d['placement_x'])), chartWidth/2 + (d3.mean(data, d => d['placement_x'])  - d3.min(data, d => d['placement_x']))])
-
-        swarmScalePlY
-          .domain(d3.extent(data, d => d['placement_y']))
-          .range([0, chartHeight])
-
-
-        swarmScaleAgeX
-          .domain(d3.extent(data, d => d['age_x']))
-          .range([chartWidth/2 - (d3.mean(data, d => d['age_x']) - d3.min(data, d => d['age_x'])), chartWidth/2 + (d3.mean(data, d => d['age_x'])  - d3.min(data, d => d['age_x']))])
-
-        swarmScaleAgeY
-          .domain(d3.extent(data, d => d['age_y']))
-          .range([0, chartHeight])
 
         
         placementScale
@@ -188,12 +159,11 @@ export default class Coordinator extends Component {
 
         g.attr('transform', translate(margin.left, margin.top))
 
-  
-
         const nodes = g.select(".nodes")
         const rings = g.select(".rings")
         const annotations = g.select(".annotations")
         const axis = g.select(".g-axis")
+        const states = svg.select(".states")
 
         let node = nodes.selectAll(".node")
           .data(data, d => d['speller_number'])
@@ -222,11 +192,11 @@ export default class Coordinator extends Component {
             .on("mouseover", d => {
               mouseOverEvents(d)
             })
-            /*.on("mouseout", d => {
+            .on("mouseout", d => {
               d3.select(".tooltip")
               .style("visibility","hidden")
 
-            })*/
+            })
             .transition()
             .duration(1000)
             .attr("r", d => beesize/300)
@@ -458,24 +428,24 @@ export default class Coordinator extends Component {
 
 
           if (prevCut == "placements") {
-            data.forEach(d => {
-              d.x = chartWidth/2
-              d.y = chartHeight/2
-            })
+            let node = nodes.selectAll(".node")
+              .data([])
+            node.exit().remove()
+            console.log(node.exit())
           }
 
-          console.log(data.map(d => [d.x, d.y]))
+          //console.log(data.map(d => [d.x, d.y]))
           let node = nodes.selectAll(".node")
             .data(data, d => d['speller_number'])
-
+          console.log(node.enter())
           node.exit().remove()
           node
             .enter()
             .append("circle")
             .attr("class", "node")  
-            .attr("cx", 0)
-            .attr("cy", 0)
           .merge(node)
+            .attr("cx", chartWidth/2)
+            .attr("cy", chartHeight/2)
             .on("mouseover", d => {
               mouseOverEvents(d)
             })
@@ -488,9 +458,10 @@ export default class Coordinator extends Component {
           console.log(chartWidth/2)
           console.log(chartHeight/2)
 
+
           simulation.nodes(data)
             .force("charge", d3.forceCollide().radius(d => ringsize/100 * 1.5))
-            .force("r", d3.forceRadial(d => radialScale(d['appearances'])).strength(prevCut == "placements" ? 0.5 : 0.1))
+            .force("r", d3.forceRadial(radialScale(0)).strength(0.1))
             .force("x", null)
             .force("y", null)
             .force("collide", null)
@@ -674,17 +645,43 @@ export default class Coordinator extends Component {
 
         } else if (cut == "map") {
           console.log(map)
+          const projection = d3.geoAlbersUsa()
+            .scale(chartWidth)
+            .translate([chartWidth / 2, chartHeight / 2]);
+          /*path.projection(projection)
 
-          const states = svg.select(".states")
-          states
-          .selectAll("path")
-          .data(topojson.feature(us, us.objects.states).features)
-          .enter().append("path")
-            .attr("d", path);
+     
+          const state = states.selectAll(".state-path")
+            .data(topojson.feature(us, us.objects.states).features)
+          state.exit().remove()
+          state
+            .enter()
+            .append("path")
+            .attr("class", "state-path")
+          .merge(state)
+            .attr("d", path)
+            .attr("opacity", 0)
 
-        states.append("path")
-            .attr("class", "state-borders")
-            .attr("d", path(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; })));
+          states.append("path")
+              .attr("class", "state-borders")
+              .attr("d", path(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; })))
+              .attr("opacity", 0)*/
+
+          //statesonly = data.filter(d => d[''])
+          d3.selectAll(".node")
+            .transition()
+            .duration(1000)
+            .attr("opacity", 0.5)
+            .attr("cx", function(d) { 
+              if (projection([d['longitude'], d['latitude']]) != null) {
+                return projection([d['longitude'], d['latitude']])[0]
+              }
+            })
+            .attr("cy", function(d) { 
+              if (projection([d['longitude'], d['latitude']]) != null) {
+                return projection([d['longitude'], d['latitude']])[1]
+              }
+            })
         }
 
         function mouseOverEvents(d) {
@@ -705,11 +702,26 @@ export default class Coordinator extends Component {
             
           })
           .style("left",function(d){
+            console.log(d3.event.clientX)
              const width =  tooltip.node().getBoundingClientRect().width
-            if (d3.event.clientX + width + 20 >= window.innerWidth) {
-              return (d3.event.clientX - width - 20) +"px"
+             const sectionswidth = document.getElementById("sections1").getBoundingClientRect().width
+             console.log(sectionswidth)
+             console.log(tooltip.node().parentNode)
+            if (window.innerWidth > 1000) {
+
+
+              if (d3.event.clientX + width + 20 >= window.innerWidth) {
+                return (d3.event.clientX - sectionswidth - width - 20) +"px"
+              } else {
+                return (d3.event.clientX - sectionswidth + 20) +"px"
+              }
             } else {
-              return (d3.event.clientX + 20) +"px"
+              if (d3.event.clientX + width + 20 >= window.innerWidth) {
+                return (d3.event.clientX - width - 20) +"px"
+              } else {
+                return (d3.event.clientX + 20) +"px"
+              }
+
             }
           })
 
@@ -725,6 +737,18 @@ export default class Coordinator extends Component {
           d3.selectAll(".node")
             .attr("cx", d => d.x + chartWidth/2)
             .attr("cy", d => d.y + chartHeight/2) 
+            .attr("r", ringsize/100)
+        }
+
+        function ticked3() {
+          /*d3.selectAll(".node")
+            .attr("cx", d => d['appearances'] == 4 && cut == "four" ? d.x + chartWidth/2 + radialScale(4) : d.x + chartWidth/2)
+            .attr("cy", d => d['appearances'] == 4 && cut == "four" ? d.y + chartHeight/2 - radialScale(4)/2 : d.y + chartHeight/2) 
+            .attr("r", ringsize/100)*/
+         
+          d3.selectAll(".node")
+            .attr("cx", d => d.x)
+            .attr("cy", d => d.y) 
             .attr("r", ringsize/100)
         }
 
@@ -763,6 +787,7 @@ export default class Coordinator extends Component {
         if (!args.length) return width
         width = args[0]
         chartWidth = width - margin.left - margin.right
+
         return chart
       }
 
@@ -770,6 +795,7 @@ export default class Coordinator extends Component {
         if (!args.length) return height
         height = args[0]
         chartHeight = height - margin.top - margin.bottom
+        mapHeight = chartHeight/2
         return chart
       }
 
@@ -867,14 +893,14 @@ export default class Coordinator extends Component {
       activateFunctions[i] = function () {};
     }
     activateFunctions[0] = bee;
-    activateFunctions[1] = zero;
-    activateFunctions[2] = one;
-    activateFunctions[3] = two;
-    activateFunctions[4] = three;
-    activateFunctions[5] = four;
-    activateFunctions[6] = placements;
-    activateFunctions[7] = age;
-    activateFunctions[8] = map;
+    activateFunctions[1] = map;
+    activateFunctions[2] = zero;
+    activateFunctions[3] = one;
+    activateFunctions[4] = two;
+    activateFunctions[5] = three;
+    activateFunctions[6] = four;
+    activateFunctions[7] = placements;
+    activateFunctions[8] = age;
 
 
     var scroll = scroller()

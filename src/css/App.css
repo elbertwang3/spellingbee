@@ -239,7 +239,8 @@ a {
 .g-axis text  {
    fill: #d3d3d3;
 }
-
+.coordinator {
+}
 .tooltip {
   position: absolute;
   font-family: 'Roboto';
@@ -325,6 +326,14 @@ a {
   fill: white;
   text-anchor: middle;
 }
+
+.states .state-path {
+  stroke: #606060;
+}
+
+.state-borders {
+  stroke: #606060;
+}
 @media only screen and (max-width: 1000px) { 
   .sections {
     float: none;
@@ -347,7 +356,9 @@ a {
     width: 100%;
     z-index: 1;
   }
-
+  .tooltip {
+    pointer-events: all;
+  }
 
   /*.step {
     opacity: 0.5;
