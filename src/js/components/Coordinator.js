@@ -187,8 +187,8 @@ export default class Coordinator extends Component {
             .attr("class", "node") 
             .attr("opacity", 0)
           .merge(node)
-            .attr("cx", d => beeScaleX(d['beex']))
-            .attr("cy", d => beeScaleY(d['beey']))
+
+           
             .on("mouseover", d => {
               mouseOverEvents(d)
             })
@@ -199,6 +199,8 @@ export default class Coordinator extends Component {
             })
             .transition()
             .duration(1000)
+             .attr("cx", d => beeScaleX(d['beex']))
+            .attr("cy", d => beeScaleY(d['beey']))
             .attr("r", d => beesize/300)
             .attr("opacity", 1)
 
@@ -645,6 +647,7 @@ export default class Coordinator extends Component {
 
         } else if (cut == "map") {
           console.log(map)
+          simulation.stop()
           const projection = d3.geoAlbersUsa()
             .scale(chartWidth)
             .translate([chartWidth / 2, chartHeight / 2]);
@@ -672,6 +675,7 @@ export default class Coordinator extends Component {
             .transition()
             .duration(1000)
             .attr("opacity", 0.5)
+            .attr("r", d => beesize/300)
             .attr("cx", function(d) { 
               if (projection([d['longitude'], d['latitude']]) != null) {
                 return projection([d['longitude'], d['latitude']])[0]
