@@ -24,7 +24,7 @@ export default class Coordinator extends Component {
     const that = this
     const {profileimages, data, us} = this.props
     const originaldata = data
-    const margin = {top: 25, bottom: 25, right: 25, left: 25}
+    const margin = {top: 50, bottom: 50, right: 25, left: 25}
 
     const lengthDict = d3.nest()
       .key(function(d) { return d['appearances']; })
@@ -86,7 +86,7 @@ export default class Coordinator extends Component {
       const height = window.innerHeight
       chart.width(width).height(height)
       beesize = Math.min(chartWidth, chartHeight)
-      ringsize = beesize * 0.8
+      ringsize = beesize * 0.9
 
       console.log("beesize: " + beesize)
       
@@ -106,7 +106,13 @@ export default class Coordinator extends Component {
         gEnter.append("g").attr("class", "nodes")
         gEnter.append("g").attr("class", "rings")
         gEnter.append("g").attr("class", "annotations")
-        gEnter.append('g').attr('class', 'g-axis')
+        const axis = gEnter.append('g').attr('class', 'g-axis')
+
+        axis.append("text")
+          .text("Best placement")
+          .attr("class", "axis-annotation")
+          .attr("transform", `translate(0, -10)`)
+
 
 
 
@@ -162,6 +168,7 @@ export default class Coordinator extends Component {
         const rings = g.select(".rings")
         const annotations = g.select(".annotations")
         const axis = g.select(".g-axis")
+          .attr("transform",`translate(${chartWidth/3}, 0)`)
         const states = svg.select(".states")
 
         let node = nodes.selectAll(".node")
@@ -173,8 +180,12 @@ export default class Coordinator extends Component {
       
           states.selectAll(".state-path")
             .attr("opacity", 0)
+
+          axis.attr("opacity", 0)
   
-          node
+
+          if (prevCut == "map") {
+            node
             .enter()
             .append("circle")
             .attr("class", "node") 
@@ -194,6 +205,29 @@ export default class Coordinator extends Component {
             .attr("cy", d => beeScaleY(d['beey']))
             .attr("r", d => beesize/300)
             .attr("opacity", 1)
+
+          } else {
+            node
+              .enter()
+              .append("circle")
+              .attr("class", "node") 
+              .attr("opacity", 0)
+            .merge(node)
+              .attr("cx", d => beeScaleX(d['beex']))
+              .attr("cy", d => beeScaleY(d['beey']))
+              .on("mouseover", d => {
+                mouseOverEvents(d)
+              })
+              .on("mouseout", d => {
+                d3.select(".tooltip")
+                .style("visibility","hidden")
+              })
+              .transition()
+              .duration(1000)
+              .attr("r", d => beesize/300)
+              .attr("opacity", 1)
+
+          }
 
             
         } else if (cut == "zero") {
@@ -387,6 +421,7 @@ export default class Coordinator extends Component {
             .restart()
 
         } else if (cut == "four") {
+          axis.attr("opacity", 0)
           const ring = rings.selectAll(".ring")
             .data(lengthDict)
           ring.exit().remove()
@@ -432,7 +467,6 @@ export default class Coordinator extends Component {
               d.y = Math.floor(Math.random() * chartHeight) - chartHeight/2;
             })
 
-            console.log(data.map(d => [d.x, d.y]))
             node = nodes.selectAll(".node")
               .data(data, d => d['speller_number'])
             console.log(node.enter())
@@ -453,8 +487,7 @@ export default class Coordinator extends Component {
                 .style("visibility","hidden")
 
             })
-            simulation// = d3.forceSimulation()
-            //simulation
+            simulation
               .nodes(data)
               .force("charge", d3.forceCollide().radius(d => ringsize/100 * 1.5))
               .force("r", d3.forceRadial(d => radialScale(d['appearances'])))
@@ -468,7 +501,6 @@ export default class Coordinator extends Component {
 
           } else {
             simulation
-              //.force("charge", d3.forceCollide().radius(d => ringsize/100 * 1.5))
               .force("r", d3.forceRadial(d => radialScale(d['appearances'])))
               .on('end', end)
               .alpha(1)
@@ -476,64 +508,6 @@ export default class Coordinator extends Component {
               .restart()
 
           }
-
-          
-
-
-          
-          /*if (prevCut != "placements") {
-            simulation.nodes(data)
-              .force("charge", d3.forceCollide().radius(d => ringsize/100 * 1.5))
-              .force("r", d3.forceRadial(d => radialScale(d['appearances'])).strength(0.1))
-              .force("x", null)
-              .force("y", null)
-              .on("tick", ticked)
-              .on('end', end)
-              .alpha(1)
-              .alphaDecay(1)
-              .restart()
-          } else {
-
-            simulation.nodes(data)
-              .force("charge", d3.forceCollide().radius(d => ringsize/100 * 1.5))
-              .force("r", d3.forceRadial(d => radialScale(d['appearances'])).strength(0.75))
-              .force("x", d3.forceX().strength(0))
-              .force("y", d3.forceY().strength(0))
-              .alpha(1)
-              .alphaDecay(0.0228)
-              .on('end', end)
-              .stop()
-              
-              for (var i = 0; i < 120; ++i) simulation.tick();
-
-
-              node
-                .enter()
-                .append("circle")
-                .attr("class", "node")
-              .merge(node)
-                .filter(d => d['appearances'] != 4)
-                .attr("opacity", 0)
-                .attr("cx", d => d.x + chartWidth/2)
-                .attr("cy", d => d.y + chartHeight/2)
-                .transition()
-                .duration(1000)
-                .attr('opacity', 1)
-                .attr("r", d => ringsize/100)
-
-
-              d3.selectAll(".node")
-                .filter(d => d['appearances'] == 4)
-                .attr("opacity", 0)
-                 .attr("cx", chartWidth/2)
-                .attr("cy", chartHeight/2) 
-                .transition()
-                .duration(1000)
-                .attr('opacity', 1)
-                .attr("r", ringsize/100)
-          }*/
-
-
         } else if (cut == "placements") {
           simulation.stop()
           const ring = rings.selectAll(".ring")
@@ -543,6 +517,8 @@ export default class Coordinator extends Component {
           const annotation = annotations.selectAll(".annotation")
             .data([])
           annotation.exit().remove()
+
+          
 
 
           const placementOnly = data.filter(d => d['best_placement'] != null)
@@ -557,8 +533,6 @@ export default class Coordinator extends Component {
             .force("charge", null)
             .force("x", d3.forceX(d => chartWidth/2).strength(1))
             .force("y", d3.forceY(d => placementScale(d['best_placement'])).strength(1))
-
-            //.on("tick", ticked2)
             .on('end', null)
             .alpha(1)
             .alphaDecay(0.0228)
@@ -578,15 +552,20 @@ export default class Coordinator extends Component {
             .attr("cy", d => d.y)
             .attr("r", d => appearanceScale(d['appearances']))
 
-          axis.transition()
+
+          axis.select(".axis-annotation")
+            .text("Best placement")
+
+          axis.attr("opacity", 1).transition()
           .duration(1000).call(d3.axisLeft(placementScale)
             .tickValues([300,50,25,10,1]))
+
+          axis.select("path")
+            .remove()
 
 
 
         } else if (cut == "age") {
-
-
           
 
           simulation.nodes(data)
@@ -598,7 +577,6 @@ export default class Coordinator extends Component {
             .on('end', null)
             .alpha(1)
             .alphaDecay(0.05)
-            //.restart()
             .stop()
 
           for (var i = 0; i < 150; ++i) simulation.tick();
@@ -629,11 +607,18 @@ export default class Coordinator extends Component {
             .attr("cy", d => d.y)
             .attr("r", d => appearanceScale(d['appearances']))
 
+          
 
-          axis.transition()
+          axis.select(".axis-annotation")
+            .text("Age")
+
+          axis.attr("opacity", 1).transition()
           .duration(1000).call(d3.axisLeft(ageScale)
             .tickValues([8,9,10,11,12,13,14,15])
               .tickFormat(d3.format("d")))
+
+          axis.select("path")
+            .remove()
           
 
 
@@ -674,9 +659,10 @@ export default class Coordinator extends Component {
         
           
           d3.selectAll(".node")
+            .attr("opacity", d => projection([d['longitude'], d['latitude']]) == null ? 0 : 0.7)
             .transition()
             .duration(1000)
-            .attr("opacity", 0.5)
+            
             .attr("r", d => beesize/300)
             .attr("cx", function(d) { 
               if (projection([d['longitude'], d['latitude']]) != null) {
@@ -738,6 +724,7 @@ export default class Coordinator extends Component {
             .attr("cx", d => d.x + chartWidth/2)
             .attr("cy", d => d.y + chartHeight/2) 
             .attr("r", ringsize/100)
+            .attr("opacity", 1)
         }
 
         function ticked3() {
