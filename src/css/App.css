@@ -228,15 +228,15 @@ a {
 }
 
 
-.axis-g line  {
+.g-axis line  {
    stroke: #d3d3d3;
 }
 
-.axis-g path  {
+.g-axis path  {
    stroke: #d3d3d3;
 }
 
-.axis-g text  {
+.g-axis text  {
    fill: #d3d3d3;
 }
 
