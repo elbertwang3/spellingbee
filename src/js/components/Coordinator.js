@@ -137,7 +137,7 @@ export default class Coordinator extends Component {
 
         appearanceScale
           .domain([0,1, 4])
-          .range([chartHeight/300,chartHeight/200,chartHeight/50]) 
+          .range([chartHeight/300,chartHeight/150,chartHeight/50]) 
 
         
         placementScale
@@ -235,6 +235,11 @@ export default class Coordinator extends Component {
           states.selectAll(".state-path")
             .attr("opacity", 0)
 
+          d3.selectAll(".node")
+            .classed("selected", false)
+          d3.selectAll(".node")
+            .classed("unselected", false)
+
           const ring = rings.selectAll(".ring")
             .data(lengthDict.slice(0,1))
           ring.exit().remove()
@@ -283,7 +288,24 @@ export default class Coordinator extends Component {
             .duration(500)
             .attr("r", ringsize/100)*/
 
+        } else if (cut == "atman") {
+          console.log("atman")
+          d3.selectAll(".node")
+            .filter(d => d['fullname'] == "BalakrishnanAtman")
+            .classed("selected", true)
+
+          d3.selectAll(".node")
+            .filter(d => d['fullname'] != "BalakrishnanAtman")
+            .classed("unselected", true)
+
+          
+
         } else if (cut == "one") {
+          d3.selectAll(".node")
+            .classed("selected", false)
+          d3.selectAll(".node")
+            .classed("unselected", false)
+
           const ring = rings.selectAll(".ring")
             .data(lengthDict.slice(0,2))
           ring.exit().remove()
@@ -640,7 +662,7 @@ export default class Coordinator extends Component {
           path.projection(projection)
         
 
-          /*const state = states.selectAll(".state-path")
+          const state = states.selectAll(".state-path")
             .data(topojson.feature(us, us.objects.states).features)
           state.exit().remove()
           state
@@ -655,7 +677,7 @@ export default class Coordinator extends Component {
             .duration(1000)
             .attr("opacity", 1)
     
-            d3.select(".nodes").moveToFront()*/
+          d3.select(".nodes").moveToFront()
         
           
           d3.selectAll(".node")
@@ -718,25 +740,12 @@ export default class Coordinator extends Component {
 
 
         function ticked() {
-          //console.log(data.map(d => [d.x, d.y]))
           console.log("ticking")
           d3.selectAll(".node")
             .attr("cx", d => d.x + chartWidth/2)
             .attr("cy", d => d.y + chartHeight/2) 
             .attr("r", ringsize/100)
             .attr("opacity", 1)
-        }
-
-        function ticked3() {
-          /*d3.selectAll(".node")
-            .attr("cx", d => d['appearances'] == 4 && cut == "four" ? d.x + chartWidth/2 + radialScale(4) : d.x + chartWidth/2)
-            .attr("cy", d => d['appearances'] == 4 && cut == "four" ? d.y + chartHeight/2 - radialScale(4)/2 : d.y + chartHeight/2) 
-            .attr("r", ringsize/100)*/
-         
-          d3.selectAll(".node")
-            .attr("cx", d => d.x)
-            .attr("cy", d => d.y) 
-            .attr("r", ringsize/100)
         }
 
         function end() {
@@ -751,13 +760,6 @@ export default class Coordinator extends Component {
 
         }
 
-        function ticked2() {
-          console.log("ticked2")
-          d3.selectAll(".node")
-            .attr("cx", d => d.x)
-            .attr("cy", d => d.y)
-            .attr("r", d => appearanceScale(d['appearances']))
-        }
         d3.selection.prototype.moveToFront = function() {  
           return this.each(function(){
             this.parentNode.appendChild(this);
@@ -838,6 +840,13 @@ export default class Coordinator extends Component {
       el.call(chart)
 
     }
+
+    function atman() {
+      console.log("getting inside zero")
+      chart.cut("atman")
+      el.call(chart)
+
+    }
     function one() {
       console.log("getting inside one")
       chart.cut("one")
@@ -894,12 +903,13 @@ export default class Coordinator extends Component {
     activateFunctions[0] = bee;
     activateFunctions[1] = map;
     activateFunctions[2] = zero;
-    activateFunctions[3] = one;
-    activateFunctions[4] = two;
-    activateFunctions[5] = three;
-    activateFunctions[6] = four;
-    activateFunctions[7] = placements;
-    activateFunctions[8] = age;
+    activateFunctions[3] = atman
+    activateFunctions[4] = one;
+    activateFunctions[5] = two;
+    activateFunctions[6] = three;
+    activateFunctions[7] = four;
+    activateFunctions[8] = placements;
+    activateFunctions[9] = age;
 
 
     var scroll = scroller()

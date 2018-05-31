@@ -93,7 +93,7 @@ body {
 
   margin: auto;
   display: block;
-  margin-bottom: 500px;
+  padding-bottom: 500px;
   padding: 1em;
   max-width: 500px;
   pointer-events: none;
@@ -101,7 +101,11 @@ body {
 
 #sections1 .step:first-child {
   height: 100vh;
-  margin-bottom: 100px;
+  padding-bottom: 100px;
+}
+
+#sections1 .step:last-child {
+  padding-bottom: 200px;
 }
 
 .sections {
@@ -171,7 +175,13 @@ h1 {
   font-size: 60px;
   text-align: center;
 }
+h3 {
+  font-family: "Roboto";
+  font-weight: 700;
+  font-size: 24px;
+  text-align: center;
 
+}
 .title {
   position: absolute;
   top: 25vh;
@@ -186,6 +196,9 @@ h1 {
   line-height: 1.5em;
   position: absolute;
   top: 60vh;
+  left: 0;
+  right: 0;
+  margin: auto;
 }
 
 .byline {
@@ -219,6 +232,15 @@ a {
   fill: #F7C377;
   stroke: #E49F4F;
   stroke-width: 1px;
+}
+
+.node.selected {
+  fill: #419EE3;
+  stroke: #0F409F;
+}
+
+.node.unselected {
+  opacity: 0.5;
 }
 
 .node:hover {
@@ -255,7 +277,7 @@ a {
   font-family: "Roboto";
   font-size: 10px;
   fill: #d3d3d3;
-  text-anchor: start;
+  text-anchor: end;
 }
 .coordinator {
 }

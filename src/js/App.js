@@ -86,7 +86,7 @@ class App extends Component {
               <div className="intro">
                  <a href="https://www.dremio.com/" target="_blank" rel="noopener noreferrer" className="logo"> <img src={dremiologo} height="40" alt="dremio-logo"/></a>
                 <div className="title"><h1>The Bee</h1></div>
-                <div className="subhed">On the nation's youngest, cutest spelling wizards and the bewildering words that they spell</div>
+                <div className="subhed">Previewing the 2018 Scripps National Spelling Bee</div>
                 <div className="byline">by <a href="https://twitter.com/elbertwang1"><strong>Elbert Wang</strong></a></div>
               </div>
             
@@ -94,22 +94,24 @@ class App extends Component {
             </section>
             <section className="step">
               <p className="prose">
-                And here's where they're from
+                Every May after Memorial Day, the nation’s best spellers descend upon Oxon Hill, MD, just outside the capital, for a chance to take 
+                home the title of nation's best speller. Here's where they're from. All of the qualifiers have made it to the national bee by 
+                winning a regional bee spanning several counties, and some have come from outside the U.S., with Canada, 
+                Ghana, Italy, Jamaica, Japan, South Korea, and the UK represented this year.
+              
+              </p>
+               <p className="prose">
+                The competition is based on Merriam Webster's unabridged Third New International Dictionary, which includes some 470,000 
+                entries, and spellers can be tested on any word from it. As 2011 winner Sukanya Roy tells me, "Trying to memorize all 
+                the words from scratch is impossible, so spellers often use study lists as a starting point, using definitions, etymologies, 
+                and roots to put together words. It’s a really strategic process.”
               </p>
           
             </section>
             <section className="step">
 
-              <p className="prose">
-                Every May after Memorial Day, the nation’s best spellers descend upon Washington D.C. for a chance to take 
-                home the title of nation's best speller. All of the qualifiers have made it to the national bee by winning a regional bee 
-                spanning several counties, with some representing an entire state or territory. The competition is based on Merriam Webster's
-                unabridged Third New International Dictionary, which includes some 470,000 entries, and spellers can be tested on any
-                word from it. As 2011 winner Sukanya Roy tells me, "Trying to memorize all the words from scratch is impossible, 
-                so spellers often use study lists as a starting point, using definitions, etymologies, and roots to put together words. 
-                It’s a really strategic process.”
-              </p>
-              <p className="prose">
+             
+              {/*<p className="prose">
                 At the National Bee, the first round is a preliminary test administered by a computer. In recent years, the test 
                 format has changed, now incorporating a vocabulary section to test the spellers’ true knowledge of the words rather 
                 than a rote memorization of their spellings. The subsequent two rounds are oral, in which spellers take to the stage 
@@ -120,64 +122,81 @@ class App extends Component {
                 where the words do not come from a study list. ESPN starts its broadcast with these two oral rounds and airs all subsequent 
                 rounds live. These oral rounds have provided me with all the data I need to figure out what makes a champion and the
                 words it took to get there. This is a story of this year's spellers, and the words previous spellers were faced with.
+              </p>*/}
+              <p className="prose">
+                In previous years, around 300 spellers would qualify for the Bee, but due to a change in the rules 
+                that has allowed more spellers in competitive districts to qualify, 519 spellers will vie for the title
+                this year. Here are all the spellers.
               </p>
+          
           
             </section>
             <section className="step">
-              <p className="prose">
-                In previous years there were
-                around 300 participants, but this year 500 have qualified, a change in the rules that has allowed more spellers
-                a chance in competitive a districts a chance at the title. Here are all 500 spellers.
+              <p className="prose">For Speller No. 153, Atman Balakrishnan, spelling runs in the family.
+              Thirty-five years ago, his father Balu Natarajan won the 1985 Bee with "milieu." Natarajan was the first Indian-American
+              to win the Bee, inspiring a generation of Indian-American families to take up spelling as an academic challenge. Siblings
+              have both won the Bee (Vanya and Kavya Shivashankar and Sriram and Jairam Hathwar), but this year,
+              Atman will get the chance to be the first father-son duo.
               </p>
-          
             </section>
             <section className="step">
               <p className="prose">
-                400 or whateva of these spellers are FIRST-TIMERS, VIRGINS, NEWBIES, whateva u wanna call em. However, 100 of 
-                these are return spellers. The winners are usually NOT first timers, as experience helps them. Last year's winner
-                Nihar Janga was a first-timer, however, but he didn't come out of nowhere. He came in 2nd at 2015 NSF spelling bee,
-                which is a sort of minor league for spellers. Most past winners in recent memory were return winners.
+                Of all of the contestants, 405 are participating for the first time, and the remaining 114 have at least one Bee under
+                their belt. It took Vanya five tries, but she finally won in 2015 on her last year of eligibility. Spellers must be 
+                in the 8th grade or below and no older than 15 in order to participate. 2016 winner Nihar Janga won on his first try, but
+                he didn't come out of nowhere. He came in 2nd at North South Foundation Bee the previous year, a sort of minor league
+                for Indian-American spellers. However, most winners in recent memory have been return participants.
 
               </p>
           
             </section>
             <section className="step">
+            
+          
+            </section>
+             <section className="step">
+            
+          
+            </section>
+            <section className="step">
               <p className="prose">
-                A handful have participated three times
+               This is Tara Singh's fourth and final spelling bee. She's improved every single year, placing 18th last year. We'll see 
+                if she can go even further this year and potentially take home the title.
               </p>
           
             </section>
             <section className="step">
               <p className="prose">
-               This is Tara Singh's FOURTH spelling bee, y'all, and it's gonna be her last. The rules say that you cannot be 
-               in 8th grade or younger, and younger than 15. She's in the 8th grade. And she placed 18th last year. We'll see how 
-               far she can go this year, or if she can take home the title.
+                Of those who have returned, this is their best placement. Three spellers, Naysa Modi, Erin Howard, and Shruthika Padhy,
+                all placed 7th last year. They will be the front-runners at this year's Bee.
               </p>
           
             </section>
             <section className="step">
               <p className="prose">
-                Of those who have returned, this is their best placement. Three spellers have placed 7th--they are considered 
-                the front-runners usually.
+                Most spellers and winners are around 13, and this year's youngest contestants, Sivasaipraneethreddy Devireddy and Akash
+                Vukoti, are 8. Two years, ago, Akash became the youngest ever qualifier for the Bee at 6 years old. Nihar was the youngest
+                winner, at 11 years old.
               </p>
           
             </section>
             <section className="step">
-              <p className="prose">
-                Most spellers are around 13ish, but some are super super young, like Akash Vukokti and Edith! LOL!
-                Here's how their ages are distributed
-              </p>
-          
-            </section>
-            <section className="step">
+              <div className="credits">
+                <h3> Credits and Methodology </h3>
+                <p className="prose">
+                  Bee graphic made using <a href="https://twitter.com/alizauf">Aliza Aufrichtig's</a> <a href="https://spotify.github.io/coordinator/"
+                  >Coördinator</a>. Analysis done using <a href="https://www.dremio.com/">Dremio</a> and Python. Created using d3.js and <a href="https://github.com/facebook/create-react-app">create-react-app</a>.
+                  Cover photo image credits go to Getty Images. Data is from Wikipedia and <a href="https://twitter.com/octonion">
+                  Christopher Long's</a> <a href="https://github.com/octonion/spelling">github repository</a>. 
+                </p>
+              </div>
               
           
-            </section>
-       
-           
+            </section>           
           </div>
+          
         </div>
-        <div className="second">
+        {/*<div className="second">
           <h2> The Words</h2>
           <p className="prose regular">
             These are word lengths. Longer isn't necessarily harder, y'all. But shorter words are tricky. Three words were 
@@ -203,7 +222,8 @@ class App extends Component {
 
 
 
-        </div>
+        </div>*/}
+
       </div>
     );
   }
