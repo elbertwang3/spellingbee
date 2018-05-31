@@ -93,14 +93,14 @@ class App extends Component {
           
             </section>
             <section className="step">
-              <p className="prose">
+              <p className="prose dark">
                 Every May after Memorial Day, the nation’s best spellers descend upon Oxon Hill, MD, just outside the capital, for a chance to take 
                 home the title of nation's best speller. Here's where they're from. All of the qualifiers have made it to the national bee by 
                 winning a regional bee spanning several counties, and some have come from outside the U.S., with Canada, 
                 Ghana, Italy, Jamaica, Japan, South Korea, and the UK represented this year.
               
               </p>
-               <p className="prose">
+               <p className="prose dark">
                 The competition is based on Merriam Webster's unabridged Third New International Dictionary, which includes some 470,000 
                 entries, and spellers can be tested on any word from it. As 2011 winner Sukanya Roy tells me, "Trying to memorize all 
                 the words from scratch is impossible, so spellers often use study lists as a starting point, using definitions, etymologies, 
@@ -123,7 +123,7 @@ class App extends Component {
                 rounds live. These oral rounds have provided me with all the data I need to figure out what makes a champion and the
                 words it took to get there. This is a story of this year's spellers, and the words previous spellers were faced with.
               </p>*/}
-              <p className="prose">
+              <p className="prose dark">
                 In previous years, around 300 spellers would qualify for the Bee, but due to a change in the rules 
                 that has allowed more spellers in competitive districts to qualify, 519 spellers will vie for the title
                 this year. Here are all the spellers.
@@ -132,15 +132,17 @@ class App extends Component {
           
             </section>
             <section className="step">
-              <p className="prose">For Speller No. 153, Atman Balakrishnan, spelling runs in the family.
+              <p className="prose dark">For Speller No. 153, Atman Balakrishnan, spelling runs in the family.
               Thirty-five years ago, his father Balu Natarajan won the 1985 Bee with "milieu." Natarajan was the first Indian-American
-              to win the Bee, inspiring a generation of Indian-American families to take up spelling as an academic challenge. Siblings
+              to win the Bee, inspiring a generation of Indian-American families to take up spelling as an academic challenge.
+              </p>
+                <p className="prose dark">Siblings
               have both won the Bee (Vanya and Kavya Shivashankar and Sriram and Jairam Hathwar), but this year,
               Atman will get the chance to be the first father-son duo.
               </p>
             </section>
             <section className="step">
-              <p className="prose">
+              <p className="prose dark">
                 Of all of the contestants, 405 are participating for the first time, and the remaining 114 have at least one Bee under
                 their belt. It took Vanya five tries, but she finally won in 2015 on her last year of eligibility. Spellers must be 
                 in the 8th grade or below and no older than 15 in order to participate. 2016 winner Nihar Janga won on his first try, but
@@ -159,27 +161,30 @@ class App extends Component {
           
             </section>
             <section className="step">
-              <p className="prose">
-               This is Tara Singh's fourth and final spelling bee. She's improved every single year, placing 18th last year. We'll see 
+              <p className="prose dark">
+               This is Tara Singh's fourth and final spelling bee. She's improved every single year, placing 18th in 2017. We'll see 
                 if she can go even further this year and potentially take home the title.
               </p>
           
             </section>
             <section className="step">
-              <p className="prose">
-                Of those who have returned, this is their best placement. Three spellers, Naysa Modi, Erin Howard, and Shruthika Padhy,
-                all placed 7th last year. They will be the front-runners at this year's Bee.
+              <p className="prose dark">
+                Of those who have returned, these are their best placements. Three spellers, Naysa Modi, Erin Howard, and Shruthika Padhy,
+                all placed 7th last year. They will be front-runners at this year's Bee.
               </p>
           
             </section>
             <section className="step">
-              <p className="prose">
+              <p className="prose dark">
                 Most spellers and winners are around 13. This year's youngest contestants, Sivasaipraneethreddy Devireddy and Akash
                 Vukoti, are 8. Two years  ago, Akash became the youngest ever qualifier for the Bee at 6 years old. Nihar became the youngest
                 winner in 2016, at 11 years old.
               </p>
           
-            </section>         
+            </section> 
+            <section className="step">
+          
+            </section>          
           </div>
           
         </div>
@@ -217,7 +222,7 @@ class App extends Component {
                 <p className="creditsp">
                   Bee graphic made using <a href="https://twitter.com/alizauf">Aliza Aufrichtig's</a> <a href="https://spotify.github.io/coordinator/"
                   >Coördinator</a>. Analysis done using <a href="https://www.dremio.com/">Dremio</a> and Python. Created using d3.js and <a href="https://github.com/facebook/create-react-app">create-react-app</a>.
-                   Data is from <a href="https://twitter.com/octonion"> Christopher Long's</a> <a href="https://github.com/octonion/spelling">github repository</a>. 
+                   Data is scraped from the Scripps <a href="http://spellingbee.com/">website</a> and from <a href="https://twitter.com/octonion"> Christopher Long's</a> <a href="https://github.com/octonion/spelling">github repository</a>. 
                 </p>
               </div>
             </div>

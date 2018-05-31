@@ -1,9 +1,11 @@
 import React, {Component}  from 'react';
 import '../../css/App.css';
+import legend from 'd3-svg-legend';
 import * as d3 from 'd3';
 import ReactDOM from 'react-dom';
 import {scroller} from '../scripts/scroller.js';
 import * as topojson from "topojson-client";
+
 import Tooltip from './Tooltip.js';
 
 export default class Coordinator extends Component {
@@ -116,6 +118,22 @@ export default class Coordinator extends Component {
 
 
 
+        const legendg = gEnter.append("g")
+          .attr("class", "legendSize")
+          
+
+        legendg.append("text")
+          .attr("class", "legend-annotation")
+          .attr("transform", `translate(0,-10)`)
+          .text("Number of previous bees")
+          .attr("text-anchor", "start")
+
+
+        
+
+
+
+
         gEnter.append("g").attr("class", "states")
 
       }
@@ -170,7 +188,8 @@ export default class Coordinator extends Component {
         const axis = g.select(".g-axis")
           .attr("transform",`translate(${chartWidth/3}, 0)`)
         const states = svg.select(".states")
-
+        const legendg = g.select(".legendSize")
+          .attr("transform", `translate(${chartWidth*2.75/4}, ${chartHeight*3/4})`)
         let node = nodes.selectAll(".node")
           .data(data, d => d['speller_number'])
 
@@ -182,6 +201,7 @@ export default class Coordinator extends Component {
             .attr("opacity", 0)
 
           axis.attr("opacity", 0)
+          legendg.attr("opacity", 0)
   
 
           if (prevCut == "map") {
@@ -289,6 +309,8 @@ export default class Coordinator extends Component {
             .attr("r", ringsize/100)*/
 
         } else if (cut == "atman") {
+          states.selectAll(".state-path")
+            .attr("opacity", 0)
           console.log("atman")
           d3.selectAll(".node")
             .filter(d => d['fullname'] == "BalakrishnanAtman")
@@ -444,6 +466,7 @@ export default class Coordinator extends Component {
 
         } else if (cut == "four") {
           axis.attr("opacity", 0)
+          legendg.attr("opacity", 0)
           const ring = rings.selectAll(".ring")
             .data(lengthDict)
           ring.exit().remove()
@@ -531,6 +554,21 @@ export default class Coordinator extends Component {
 
           }
         } else if (cut == "placements") {
+
+
+          const legendSize = legend.legendSize()
+            .scale(appearanceScale)
+            .shape('circle')
+            .shapePadding(15)
+            .labelOffset(10)
+            .labelFormat(d3.format("d"))
+            .orient('vertical');
+
+          legendg
+            .attr("opacity", 1)
+            .call(legendSize);
+
+
           simulation.stop()
           const ring = rings.selectAll(".ring")
             .data([])

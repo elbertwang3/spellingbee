@@ -93,11 +93,13 @@ body {
 
   margin: auto;
   display: block;
-  padding-bottom: 500px;
   padding: 1em;
+  padding-bottom: 500px;
   max-width: 500px;
   pointer-events: none;
 }
+
+
 
 #sections1 .step:first-child {
   height: 100vh;
@@ -275,9 +277,16 @@ a {
 
 .axis-annotation {
   font-family: "Roboto";
-  font-size: 10px;
+  font-size: 11px;
   fill: #d3d3d3;
   text-anchor: end;
+}
+
+.legend-annotation {
+  font-family: "Roboto";
+  font-size: 11px;
+  fill: #d3d3d3;
+  text-anchor: start;
 }
 .coordinator {
 }
@@ -393,6 +402,19 @@ a {
   line-height: 2em;
 }
 
+
+.legendCells .cell circle {
+  fill: #F7C377;
+  stroke: #E49F4F;
+  stroke-width: 1px;
+
+}
+
+.legendCells .cell text {
+  fill: #d3d3d3;
+  font-family: "Roboto";
+  font-size: 11px;
+}
 @media only screen and (max-width: 1000px) { 
   .sections {
     float: none;
@@ -404,7 +426,9 @@ a {
     padding-left: 0px;
   
   }
-
+  .prose.dark {
+    background-color: rgba(0,0,0,0.25);
+  }
   /*.graphic {
     display: block;
     margin: auto;
