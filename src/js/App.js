@@ -174,28 +174,16 @@ class App extends Component {
             </section>
             <section className="step">
               <p className="prose">
-                Most spellers and winners are around 13, and this year's youngest contestants, Sivasaipraneethreddy Devireddy and Akash
-                Vukoti, are 8. Two years, ago, Akash became the youngest ever qualifier for the Bee at 6 years old. Nihar was the youngest
-                winner, at 11 years old.
+                Most spellers and winners are around 13. This year's youngest contestants, Sivasaipraneethreddy Devireddy and Akash
+                Vukoti, are 8. Two years  ago, Akash became the youngest ever qualifier for the Bee at 6 years old. Nihar became the youngest
+                winner in 2016, at 11 years old.
               </p>
           
-            </section>
-            <section className="step">
-              <div className="credits">
-                <h3> Credits and Methodology </h3>
-                <p className="prose">
-                  Bee graphic made using <a href="https://twitter.com/alizauf">Aliza Aufrichtig's</a> <a href="https://spotify.github.io/coordinator/"
-                  >Coördinator</a>. Analysis done using <a href="https://www.dremio.com/">Dremio</a> and Python. Created using d3.js and <a href="https://github.com/facebook/create-react-app">create-react-app</a>.
-                  Cover photo image credits go to Getty Images. Data is from Wikipedia and <a href="https://twitter.com/octonion">
-                  Christopher Long's</a> <a href="https://github.com/octonion/spelling">github repository</a>. 
-                </p>
-              </div>
-              
-          
-            </section>           
+            </section>         
           </div>
           
         </div>
+
         {/*<div className="second">
           <h2> The Words</h2>
           <p className="prose regular">
@@ -223,7 +211,16 @@ class App extends Component {
 
 
         </div>*/}
-
+        <div className="credits-container">
+          <div className="credits">
+                <h3> Credits and Methodology </h3>
+                <p className="creditsp">
+                  Bee graphic made using <a href="https://twitter.com/alizauf">Aliza Aufrichtig's</a> <a href="https://spotify.github.io/coordinator/"
+                  >Coördinator</a>. Analysis done using <a href="https://www.dremio.com/">Dremio</a> and Python. Created using d3.js and <a href="https://github.com/facebook/create-react-app">create-react-app</a>.
+                   Data is from <a href="https://twitter.com/octonion"> Christopher Long's</a> <a href="https://github.com/octonion/spelling">github repository</a>. 
+                </p>
+              </div>
+            </div>
       </div>
     );
   }

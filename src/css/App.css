@@ -372,6 +372,27 @@ a {
   fill: #202020;
 }
 
+.credits-container {
+  background-color: #202020;
+
+  display: block;
+  margin: auto;
+  font-family: "Roboto";
+  color: white;
+  padding-bottom: 2em;
+}
+.credits {
+    border-top: 1px solid rgba(255, 255, 255, 1);
+    max-width: 500px;
+    margin: 1em;
+    display: block;
+    margin: auto;
+}
+.creditsp {
+  font-size: 12px;
+  line-height: 2em;
+}
+
 @media only screen and (max-width: 1000px) { 
   .sections {
     float: none;
