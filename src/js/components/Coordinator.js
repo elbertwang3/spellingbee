@@ -364,6 +364,8 @@ export default class Coordinator extends Component {
 
 
         } else if (cut == "two") {
+          states.selectAll(".state-path")
+            .attr("opacity", 0)
           const ring = rings.selectAll(".ring")
             .data(lengthDict.slice(0,3))
           ring.exit().remove()
@@ -411,6 +413,8 @@ export default class Coordinator extends Component {
 
             
         } else if (cut == "three") {
+          states.selectAll(".state-path")
+            .attr("opacity", 0)
           const ring = rings.selectAll(".ring")
             .data(lengthDict.slice(0,4))
           ring.exit().remove()
@@ -542,7 +546,8 @@ export default class Coordinator extends Component {
 
           }
         } else if (cut == "placements") {
-
+          states.selectAll(".state-path")
+            .attr("opacity", 0)
 
           const legendSize = legend.legendSize()
             .scale(appearanceScale)
@@ -614,6 +619,8 @@ export default class Coordinator extends Component {
 
 
         } else if (cut == "age") {
+          states.selectAll(".state-path")
+            .attr("opacity", 0)
           
 
           simulation.nodes(data)

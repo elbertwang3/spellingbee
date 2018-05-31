@@ -86,7 +86,7 @@ class App extends Component {
               <div className="intro">
                  <a href="https://www.dremio.com/" target="_blank" rel="noopener noreferrer" className="logo"> <img src={dremiologo} height="40" alt="dremio-logo"/></a>
                 <div className="title"><h1>The Bee</h1></div>
-                <div className="subhed">A preview of the contestants and frontrunners from 2018 Scripps National Spelling Bee</div>
+                <div className="subhed">A preview of the contestants and frontrunners from the 2018 Scripps National Spelling Bee</div>
                 <div className="byline">by <a href="https://twitter.com/elbertwang1"><strong>Elbert Wang</strong></a></div>
               </div>
             
@@ -124,9 +124,9 @@ class App extends Component {
                 words it took to get there. This is a story of this year's spellers, and the words previous spellers were faced with.
               </p>*/}
               <p className="prose dark">
-                In previous years, around 300 spellers would qualify for the Bee, but due to a change in the rules 
-                that has allowed more spellers in competitive districts to qualify, 519 spellers will vie for the title
-                this year. Here are all the spellers.
+                In previous years, around 300 spellers would qualify for the Bee, but Scripps implemented a new program called "RSVBEE" this year,
+                giving spellers who had previously been finalists or won a school bee--but not the regional one--a chance to apply for a spot,
+                allowing spellers in competitive districts to compete at the national bee. Here are all the spellers.
               </p>
           
           
@@ -214,16 +214,17 @@ class App extends Component {
 
 
         </div>*/}
-        <div className="conclusion">  <p className="prose">
+        <div className="conclusion-container"><div className="conclusion">  <p className="prose">
         Aside from a love of words, what brings me back to the Bee year after year
         is the youth of the spellers. The Bee gives us a veritable collection of the nation's most adorable 
-        young spelling wizards, which includes cherubic <a href="https://www.youtube.com/watch?v=bAOoFGCh1eY">Akash</a>, who 
-        can spell pneumonoultramicroscopicsilicovolcanoconiosis and melt your cold, jaded heart while doing so.
-        The kids have personality, they have poise, and they have been so devoted to the practice of spelling--and there is no pastime more 
-        American or wholesome--that they have made it to the national competition. The Bee becomes a panacea for all things bad, like covfefe,
-        autocorrect, and the constant negative attacks on the press, giving us hope for the next generation, and a reminder that
+        young spelling wizards, which includes the cherubic <a href="https://www.youtube.com/watch?v=bAOoFGCh1eY">Akash</a>, who 
+        can spell pneumonoultramicroscopicsilicovolcanoconiosis and melt your heart while doing so.
+        These kids have personality, they have poise, and they have been so devoted to the practice of spelling--and there is no pastime more 
+        American, wholesome, or pure--that they have made it to the national competition. The Bee becomes a panacea for and distraction from
+        all things bad, like covfefe and the constant negative attacks on the press, giving us hope for the next generation, and a reminder that
         good things do come in small packages.</p>
 
+        </div>
         </div>
         <div className="credits-container">
           <div className="credits">

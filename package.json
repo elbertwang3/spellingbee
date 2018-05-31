@@ -2,6 +2,7 @@
   "name": "spellingbee",
   "version": "0.1.0",
   "private": true,
+  "homepage": "http://elbertwang3.github.io/bee",
   "dependencies": {
     "d3": "^5.4.0",
     "d3-svg-legend": "^2.25.6",
