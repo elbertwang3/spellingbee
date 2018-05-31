@@ -86,7 +86,7 @@ class App extends Component {
               <div className="intro">
                  <a href="https://www.dremio.com/" target="_blank" rel="noopener noreferrer" className="logo"> <img src={dremiologo} height="40" alt="dremio-logo"/></a>
                 <div className="title"><h1>The Bee</h1></div>
-                <div className="subhed">Previewing the 2018 Scripps National Spelling Bee</div>
+                <div className="subhed">A preview of the contestants and frontrunners from 2018 Scripps National Spelling Bee</div>
                 <div className="byline">by <a href="https://twitter.com/elbertwang1"><strong>Elbert Wang</strong></a></div>
               </div>
             
@@ -102,7 +102,7 @@ class App extends Component {
               </p>
                <p className="prose dark">
                 The competition is based on Merriam Webster's unabridged Third New International Dictionary, which includes some 470,000 
-                entries, and spellers can be tested on any word from it. As 2011 winner Sukanya Roy tells me, "Trying to memorize all 
+                entries, from which spellers can be tested on any word. As 2011 winner Sukanya Roy tells me, "Trying to memorize all 
                 the words from scratch is impossible, so spellers often use study lists as a starting point, using definitions, etymologies, 
                 and roots to put together words. It’s a really strategic process.”
               </p>
@@ -144,10 +144,11 @@ class App extends Component {
             <section className="step">
               <p className="prose dark">
                 Of all of the contestants, 405 are participating for the first time, and the remaining 114 have at least one Bee under
-                their belt. It took Vanya five tries, but she finally won in 2015 on her last year of eligibility. Spellers must be 
-                in the 8th grade or below and no older than 15 in order to participate. 2016 winner Nihar Janga won on his first try, but
-                he didn't come out of nowhere. He came in 2nd at North South Foundation Bee the previous year, a sort of minor league
-                for Indian-American spellers. However, most winners in recent memory have been return participants.
+                their belt. Most winners in recent memory have been return participants. It took Vanya five tries, but she finally won in 2015 on her 
+                last year of eligibility. Spellers must be 
+                in the 8th grade or below and no older than 15 in order to participate. 2016 winner Nihar Janga won on his first try, which
+                hadn't been done since 2002, but he didn't come out of nowhere. He came in 2nd at North South Foundation Bee the previous year, a sort of minor league
+                for Indian-American spellers. 
 
               </p>
           
@@ -170,7 +171,7 @@ class App extends Component {
             <section className="step">
               <p className="prose dark">
                 Of those who have returned, these are their best placements. Three spellers, Naysa Modi, Erin Howard, and Shruthika Padhy,
-                all placed 7th last year. They will be front-runners at this year's Bee.
+                all placed 7th last year. They will be front-runners at this year's Bee. 
               </p>
           
             </section>
@@ -181,10 +182,7 @@ class App extends Component {
                 winner in 2016, at 11 years old.
               </p>
           
-            </section> 
-            <section className="step">
-          
-            </section>          
+            </section>         
           </div>
           
         </div>
@@ -216,6 +214,17 @@ class App extends Component {
 
 
         </div>*/}
+        <div className="conclusion">  <p className="prose">
+        Aside from a love of words, what brings me back to the Bee year after year
+        is the youth of the spellers. The Bee gives us a veritable collection of the nation's most adorable 
+        young spelling wizards, which includes cherubic <a href="https://www.youtube.com/watch?v=bAOoFGCh1eY">Akash</a>, who 
+        can spell pneumonoultramicroscopicsilicovolcanoconiosis and melt your cold, jaded heart while doing so.
+        The kids have personality, they have poise, and they have been so devoted to the practice of spelling--and there is no pastime more 
+        American or wholesome--that they have made it to the national competition. The Bee becomes a panacea for all things bad, like covfefe,
+        autocorrect, and the constant negative attacks on the press, giving us hope for the next generation, and a reminder that
+        good things do come in small packages.</p>
+
+        </div>
         <div className="credits-container">
           <div className="credits">
                 <h3> Credits and Methodology </h3>

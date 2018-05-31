@@ -68,7 +68,6 @@ export default class Coordinator extends Component {
     const annos = ["everyone", "at least one appearance", "two", "three", "four"]
     d3.select(".tooltip")
       .on("click",function(){
-        console.log("getting clicked")
         d3.select(this).style("visibility","hidden");
       });
 
@@ -76,21 +75,13 @@ export default class Coordinator extends Component {
     
     
     function resize() {
-      //const sz = Math.min(el.node().offsetWidth, window.innerHeight) * 0.9
-      /*let width
-      if (window.innerWidth > 700) {
-        width = 700
-      } else {
-        width = window.innerWidth
-      }*/
-      //console.log(window.innerHeight)
       const width = window.innerWidth > 1000 ? ReactDOM.findDOMNode(that).clientWidth : window.innerWidth
       const height = window.innerHeight
       chart.width(width).height(height)
       beesize = Math.min(chartWidth, chartHeight)
       ringsize = beesize * 0.9
 
-      console.log("beesize: " + beesize)
+
       
       el.call(chart)
     }
@@ -195,7 +186,6 @@ export default class Coordinator extends Component {
 
         node.exit().remove()
         if (cut == "bee") {
-          console.log("bee")
       
           states.selectAll(".state-path")
             .attr("opacity", 0)
@@ -288,7 +278,6 @@ export default class Coordinator extends Component {
             .text(d => d)
             .attr("x", chartWidth/2)
             .attr("y", (d, i) => {
-              console.log(radialScale(i))
               return chartHeight/2 - radialScale(i) * ringDict[i]
             })
             .transition()
@@ -300,6 +289,7 @@ export default class Coordinator extends Component {
             .force("charge", d3.forceCollide().radius(d => ringsize/100 * 1.5))
             .force("r", d3.forceRadial(radialScale(0)))
             .on("tick", ticked)
+            .on('end', null)
             .alpha(1)
             .restart()
 
@@ -311,7 +301,6 @@ export default class Coordinator extends Component {
         } else if (cut == "atman") {
           states.selectAll(".state-path")
             .attr("opacity", 0)
-          console.log("atman")
           d3.selectAll(".node")
             .filter(d => d['fullname'] == "BalakrishnanAtman")
             .classed("selected", true)
@@ -368,6 +357,8 @@ export default class Coordinator extends Component {
                 return radialScale(d['appearances'])
               }
             }))
+            .on('tick', ticked)
+            .on('end', null)
             .alpha(1)
             .restart()
 
@@ -413,6 +404,8 @@ export default class Coordinator extends Component {
                 return radialScale(d['appearances'])
               }
             }))
+            .on('tick', ticked)
+            .on('end', null)
             .alpha(1)
             .restart()
 
@@ -459,7 +452,7 @@ export default class Coordinator extends Component {
               }
             }))
             .on('tick', ticked)
-            //.on('end', null)
+            .on('end', null)
             .alpha(1)
             .alphaDecay(0.0228)
             .restart()
@@ -502,10 +495,6 @@ export default class Coordinator extends Component {
 
           if (prevCut == "placements") {
             simulation.stop()
-            /*let node = nodes.selectAll(".node")
-              .data([])
-            node.exit().remove()
-            console.log(node.exit())*/  
             
             data.forEach(d => {
               d.x = Math.floor(Math.random() * chartWidth) - chartWidth/2;
@@ -514,7 +503,6 @@ export default class Coordinator extends Component {
 
             node = nodes.selectAll(".node")
               .data(data, d => d['speller_number'])
-            console.log(node.enter())
             node.exit().remove()
             node
               .enter()
@@ -683,7 +671,6 @@ export default class Coordinator extends Component {
 
 
         } else if (cut == "map") {
-          console.log(map)
           simulation.stop()
           const ring = rings.selectAll(".ring")
             .data([])
@@ -778,7 +765,6 @@ export default class Coordinator extends Component {
 
 
         function ticked() {
-          console.log("ticking")
           d3.selectAll(".node")
             .attr("cx", d => d.x + chartWidth/2)
             .attr("cy", d => d.y + chartHeight/2) 
@@ -787,7 +773,6 @@ export default class Coordinator extends Component {
         }
 
         function end() {
-          console.log("end")
           d3.selectAll(".node")
             .filter(d => d['appearances'] == 4)
             .transition()
@@ -867,61 +852,52 @@ export default class Coordinator extends Component {
 
     init()
     function bee() {
-      console.log("getting inside bee")
       chart.cut("bee")
       el.call(chart)
 
     }
     function zero() {
-      console.log("getting inside zero")
       chart.cut("zero")
       el.call(chart)
 
     }
 
     function atman() {
-      console.log("getting inside zero")
       chart.cut("atman")
       el.call(chart)
 
     }
     function one() {
-      console.log("getting inside one")
       chart.cut("one")
       el.call(chart)
 
     }
 
     function two() {
-      console.log("getting inside two")
       chart.cut("two")
       el.call(chart)
 
     }
 
     function three() {
-      console.log("getting inside three")
       chart.cut("three")
       el.call(chart)
 
     }
 
     function four() {
-      console.log("getting inside four")
       chart.cut("four")
       el.call(chart)
 
     }
 
     function placements() {
-      console.log("getting inside placements")
       chart.cut("placements")
       el.call(chart)
 
     }
 
     function age() {
-      console.log("getting inside age")
       chart.cut("age")
       el.call(chart)
 

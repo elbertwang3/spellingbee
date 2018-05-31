@@ -99,6 +99,18 @@ body {
   pointer-events: none;
 }
 
+.conclusion {
+  margin: auto;
+  display: block;
+  padding: 1em;
+  background-color: #202020;
+
+}
+
+.conclusion p {
+  max-width: 500px;
+  color: white;
+}
 
 
 #sections1 .step:first-child {
@@ -170,6 +182,7 @@ body {
   text-align: center;
   display: block;
   margin: 0 auto;
+
 }
 h1 {
   font-family: "Playfair Display";
@@ -183,6 +196,14 @@ h3 {
   font-size: 24px;
   text-align: center;
 
+}
+
+.logo {
+  position: absolute;
+  top: 5vh;
+  left: 0;
+  right: 0;
+  margin: auto;
 }
 .title {
   position: absolute;
@@ -207,7 +228,7 @@ h3 {
   font-family: "Roboto";
   font-size: 16px;
   position: absolute;
-  top: 70vh;
+  top: 75vh;
   left: 0;
   right: 0;
   margin: auto;
