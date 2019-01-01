@@ -440,6 +440,28 @@ a {
   font-family: "Roboto";
   font-size: 11px;
 }
+
+
+.word-list {
+  margin: 0;
+}
+.word-li {
+  color: #d3d3d3;
+  line-height: 1.25;
+  font-size: 10px;
+  margin-right: 1em;
+  padding: 0.15em;
+  display: inline-block;
+  float: left;
+}
+
+
+
+.word-li:hover {
+  cursor: pointer;
+  background-color: white;
+  color: #202020;
+}
 @media only screen and (max-width: 1000px) { 
   .sections {
     float: none;

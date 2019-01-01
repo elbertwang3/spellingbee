@@ -39,8 +39,7 @@ export default class Tooltip extends Component {
 					<div className="sponsor">{display_name}</div>
 					
 					<div className="hometown">hometown: {display_city}, {display_state}</div>
-					{/*<div className="age">age: {age}</div>
-					<div className="school">school: {school_name}</div>*/}
+					<div className="school">school: {school_name}</div>
 					<div className="word">favorite word: {fav_word}</div>
 					<div className="previous">previous bees: {previous_bees}</div>
 

@@ -758,7 +758,7 @@ export default class Coordinator extends Component {
           .style("left",function(d){
             const tooltipwidth =  tooltip.node().getBoundingClientRect().width
             const sectionswidth = document.getElementById("sections1").getBoundingClientRect().width
-            if (mobile || window.innerWidth <= 600) {
+            if (mobile || window.innerWidth <= 700) {
               const offset = (window.innerWidth - tooltipwidth)/2
               console.log(offset)
               return offset + "px"

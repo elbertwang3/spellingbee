@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import '../css/App.css';
 import Coordinator from './components/Coordinator.js';
+import Words from './components/Words.js';
 import dremiologo from '../images/dremiologo.svg';
 import * as d3 from 'd3';
 import ReactGA from 'react-ga';
@@ -14,6 +15,7 @@ class App extends Component {
       spellers: null,
       results: null,
       levenshtein: null,
+      allwords: null
     };
 
     ReactGA.initialize('UA-92535580-1');
@@ -34,8 +36,8 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const files = ["data/2018spellers.json", "data/results.csv", "data/levenshtein.csv", "data/us.json"]
-    const types = [this.type3, this.type, this.type2, this.type]
+    const files = ["data/2018spellers.json", "data/results.csv", "data/levenshtein.csv", "data/us.json", "data/results2.csv"]
+    const types = [this.type3, this.type, this.type2, this.type, this.type]
     const csvPattern = new RegExp(".csv$")
     const jsonPattern = new RegExp(".json$")
     Promise.all(files.map((url,i) => {
@@ -51,7 +53,8 @@ class App extends Component {
         spellers: values[0],
         results: values[1],
         levenshtein: values[2],
-        usmap: values[3]
+        usmap: values[3],
+        allwords: values[4]
       })
     })
   }
@@ -68,10 +71,11 @@ class App extends Component {
  
 
   render() {
-    const {profileimages, spellers, results, levenshtein, usmap} = this.state
-    let coordinator
+    const {profileimages, spellers, results, levenshtein, usmap, allwords} = this.state
+    let coordinator, words
     if (profileimages && spellers) {
       coordinator = <Coordinator profileimages={profileimages} data={spellers} us={usmap}/>
+      words = <Words data={allwords} />
     }
     return (
       <div className="content">
@@ -214,7 +218,10 @@ class App extends Component {
 
 
         </div>*/}
-        <div className="conclusion-container"><div className="conclusion">  <p className="prose">
+        <div className="words-container">
+          {words}
+        </div>
+        <div className="conclusion-container"><div className="conclusion">  <p className="prose2">
         Aside from a love of words, what brings me back to the Bee year after year
         is the youth of the spellers. The Bee gives us a veritable collection of the nation's most adorable 
         young spelling wizards, which includes the cherubic <a href="https://www.youtube.com/watch?v=bAOoFGCh1eY">Akash</a>, who 
